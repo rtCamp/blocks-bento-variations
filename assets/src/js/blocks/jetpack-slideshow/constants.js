@@ -1,7 +1,5 @@
 /**
  * Holds 'Jetpack Slideshow' block related constants.
- *
- * @package blocks-bento-variations
  */
 export const BLOCK_NAME = 'jetpack/slideshow';
 export const BENTO_VARIATION_NAME = 'jetpack/slideshow-bento';
