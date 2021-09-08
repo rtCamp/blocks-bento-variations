@@ -23,6 +23,7 @@ class Plugin {
 
 		// Load plugin classes.
 		Assets::get_instance();
+		Blocks::get_instance();
 
 	}
 

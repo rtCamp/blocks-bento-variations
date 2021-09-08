@@ -1,5 +1,7 @@
 /**
  * Editor specific scripts.
+ *
+ * @package blocks-bento-variations
  */
 
 /**
