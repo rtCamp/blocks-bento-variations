@@ -53,9 +53,19 @@ class Assets {
 			return;
 		}
 
+		/**
+		 * Blocks' Editor scripts.
+		 */
 		$this->register_script( 'bento-variations-editor', 'js/editor.js', [], false, false );
 
 		wp_enqueue_script( 'bento-variations-editor' );
+
+		/**
+		 * Blocks' Editor styles.
+		 */
+		$this->register_style( 'bento-variations-editor', 'css/editor.css' );
+
+		wp_enqueue_style( 'bento-variations-editor' );
 	}
 
 	/**

@@ -1,0 +1,13 @@
+/**
+ * Block's Front-end specific styles.
+ */
+.wp-block-jetpack-slideshow_pagination {
+	display: none;
+}
+
+/* stylelint-disable selector-max-specificity */
+.wp-block-jetpack-slideshow[data-autoplay=true] .wp-block-jetpack-slideshow_container .wp-block-jetpack-slideshow_button-pause,
+.wp-block-jetpack-slideshow.wp-amp-block.wp-block-jetpack-slideshow__autoplay .wp-block-jetpack-slideshow_container.swiper-container > .wp-block-jetpack-slideshow_button-pause {
+	display: none;
+}
+/* stylelint-enable selector-max-specificity */

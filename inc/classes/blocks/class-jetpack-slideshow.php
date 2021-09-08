@@ -1,12 +1,13 @@
 <?php
 /**
- * Assets class.
+ * 'Jetpack: Slideshow' block related functionalities.
  *
  * @package blocks-bento-variations
  */
 
 namespace Blocks_Bento_Variations\Features\Inc\Blocks;
 
+use Blocks_Bento_Variations\Features\Inc\Assets;
 use Blocks_Bento_Variations\Features\Inc\Traits\Singleton;
 
 /**
@@ -80,11 +81,13 @@ class Jetpack_Slideshow {
 			return '';
 		}
 
+		// Loads block's required front-end scripts & styles.
+		$this->enqueue_block_assets();
+
 		if ( class_exists( '\Jetpack_Gutenberg' ) && function_exists( '\Automattic\Jetpack\Extensions\Slideshow\render_amp' ) ) {
 			\Jetpack_Gutenberg::load_assets_as_required( 'slideshow' );
 
 			if ( is_bento( $this->block_attributes ) ) {
-				$this->enqueue_bento_compatibility_assets();
 				return $this->render_bento();
 			}
 
@@ -114,11 +117,10 @@ class Jetpack_Slideshow {
 		$classes  = 'wp-block-jetpack-slideshow_container swiper-container';
 
 		return sprintf(
-			'<div class="%1$s" id="wp-block-jetpack-slideshow__%2$d"><div class="wp-block-jetpack-slideshow_container swiper-container">%3$s%4$s%5$s</div></div>',
+			'<div class="%1$s" id="wp-block-jetpack-slideshow__%2$d"><div class="wp-block-jetpack-slideshow_container swiper-container">%3$s%4$s</div></div>',
 			esc_attr( $classes ),
 			absint( $wp_block_jetpack_slideshow_id ),
 			$this->amp_base_carousel( $wp_block_jetpack_slideshow_id ),
-			$autoplay ? \Automattic\Jetpack\Extensions\Slideshow\autoplay_ui( $wp_block_jetpack_slideshow_id ) : '',
 			''
 		);
 	}
@@ -150,7 +152,7 @@ class Jetpack_Slideshow {
 	}
 
 	/**
-	 * Generate array of slides markup
+	 * Generate array of slides markup. Alias of the original function, with necessary markup changes.
 	 *
 	 * @param array $ids Array of image ids.
 	 * @param int   $width Width of the container.
@@ -186,39 +188,6 @@ class Jetpack_Slideshow {
 	}
 
 	/**
-	 * Generate array of bullets markup
-	 *
-	 * @param array $ids Array of image ids.
-	 * @param int   $block_ordinal The ordinal number of the block, used in unique ID.
-	 *
-	 * @return array Array of bullets markup.
-	 */
-	protected function bullets( $ids = array(), $block_ordinal = 0 ) {
-		$buttons = array_map(
-			function ( $index ) {
-				$aria_label = sprintf(
-					/* translators: %d: Slide number. */
-					__( 'Go to slide %d', 'jetpack' ),
-					absint( $index + 1 )
-				);
-				return sprintf(
-					'<button option="%d" class="swiper-pagination-bullet" tabindex="0" role="button" aria-label="%s" %s></button>',
-					absint( $index ),
-					esc_attr( $aria_label ),
-					0 === $index ? 'selected' : ''
-				);
-			},
-			array_keys( $ids )
-		);
-
-		return sprintf(
-			'<amp-selector id="wp-block-jetpack-slideshow__amp-pagination__%1$d" class="wp-block-jetpack-slideshow_pagination swiper-pagination swiper-pagination-bullets amp-pagination" on="select:wp-block-jetpack-slideshow__amp-base-carousel__%1$d.goToSlide(index=event.targetOption)" layout="container">%2$s</amp-selector>',
-			absint( $block_ordinal ),
-			implode( '', $buttons )
-		);
-	}
-
-	/**
 	 * Initializes class variable $block_attributes.
 	 *
 	 * @param array $attributes Array containing block attributes.
@@ -235,11 +204,20 @@ class Jetpack_Slideshow {
 	}
 
 	/**
-	 * Enqueue required scripts & styles for the bento component(s).
+	 * Enqueue required scripts & styles for the block.
+	 * Enqueues Bento component compatibility assets conditionally.
 	 *
 	 * @return void
 	 */
-	protected function enqueue_bento_compatibility_assets() {
+	protected function enqueue_block_assets() {
+
+		Assets::get_instance()->register_style( 'jetpack-slideshow-bento', 'css/style-jetpack-slideshow.css' );
+
+		wp_enqueue_style( 'jetpack-slideshow-bento' );
+
+		if ( ! is_bento( $this->block_attributes ) ) {
+			return; // Rest of the assets are Bento specific.
+		}
 
 		$src                      = 'https://cdn.ampproject.org/v0/amp-base-carousel-1.0.js';
 		$amp_base_carousel_script = wp_scripts()->query( 'amp-base-carousel' );

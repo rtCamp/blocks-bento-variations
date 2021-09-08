@@ -27,10 +27,11 @@ module.exports = {
 
 	entry: {
 		editor: resolve('src/js/editor.js'),
+		'jetpack-slideshow': resolve('src/js/blocks/jetpack-slideshow/view.js'),
 	},
 
 	output: {
 		filename: '[name].js',
-		path: resolve('build/js')
-	}
+		path: resolve('build/js'),
+	},
 };
