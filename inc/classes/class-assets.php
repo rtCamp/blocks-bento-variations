@@ -38,6 +38,7 @@ class Assets {
 		 * @see https://github.com/WordPress/gutenberg/issues/9757#issuecomment-486088850
 		 */
 		add_action( 'init', [ $this, 'enqueue_block_editor_assets' ] );
+		add_action( 'wp_head', [ $this, 'enable_bento_experiment' ] );
 
 	}
 
@@ -135,5 +136,23 @@ class Assets {
 		$file_path = sprintf( '%s/%s', BLOCKS_BENTO_VARIATIONS_BUILD_URI, $file );
 
 		return file_exists( $file_path ) ? filemtime( $file_path ) : false;
+	}
+
+	/**
+	 * Enables Bento experimental feature.
+	 */
+	public function enable_bento_experiment() {
+
+		if ( \is_amp_request() ) {
+			return;
+		}
+
+		?>
+		<script>
+			(self.AMP = self.AMP || []).push(function (AMP) {
+				AMP.toggleExperiment('bento', true);
+			});
+		</script>
+		<?php
 	}
 }
