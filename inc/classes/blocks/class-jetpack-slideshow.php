@@ -25,6 +25,26 @@ class Jetpack_Slideshow {
 	const NAME = 'jetpack/slideshow';
 
 	/**
+	 * Bento component's asset handle.
+	 */
+	const AMP_BASE_CAROUSEL_HANDLE = 'amp-base-carousel';
+
+	/**
+	 * Bento component's asset version.
+	 */
+	const AMP_BASE_CAROUSEL_VERSION = '1.0';
+
+	/**
+	 * AMP Runtime script's handle.
+	 */
+	const AMP_RUNTIME_HANDLE = 'amp-runtime';
+
+	/**
+	 * Block assets' handle.
+	 */
+	const ASSETS_HANDLE = 'jetpack-slideshow-bento';
+
+	/**
 	 * Current block's block attributes.
 	 *
 	 * @var array Block Attributes.
@@ -170,12 +190,12 @@ class Jetpack_Slideshow {
 				) : '';
 				$image      = wp_get_attachment_image(
 					$id,
-					array( $width, $height ),
+					[ $width, $height ],
 					false,
-					array(
+					[
 						'class'      => 'wp-block-jetpack-slideshow_image',
 						'object-fit' => 'contain',
-					)
+					]
 				);
 				return sprintf(
 					'<div class="wp-block-jetpack-slideshow_slide"><figure>%s%s</figure></div>',
@@ -211,38 +231,38 @@ class Jetpack_Slideshow {
 	 */
 	protected function enqueue_block_assets() {
 
-		Assets::get_instance()->register_style( 'jetpack-slideshow-bento', 'css/style-jetpack-slideshow.css' );
+		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-jetpack-slideshow.css' );
 
-		wp_enqueue_style( 'jetpack-slideshow-bento' );
+		wp_enqueue_style( self::ASSETS_HANDLE );
 
 		if ( ! is_bento( $this->block_attributes ) ) {
 			return; // Rest of the assets are Bento specific.
 		}
 
-		$src                      = 'https://cdn.ampproject.org/v0/amp-base-carousel-1.0.js';
-		$amp_base_carousel_script = wp_scripts()->query( 'amp-base-carousel' );
+		$src                      = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.js', self::AMP_BASE_CAROUSEL_VERSION );
+		$amp_base_carousel_script = wp_scripts()->query( self::AMP_BASE_CAROUSEL_HANDLE );
 
 		if ( $amp_base_carousel_script ) {
 			// Make sure that 1.0 (Bento) is used instead of 0.1 (latest).
 			$amp_base_carousel_script->src = $src;
 		} else {
-			wp_register_script( 'amp-base-carousel', $src, array( 'amp-runtime' ), null, false );
+			wp_register_script( self::AMP_BASE_CAROUSEL_HANDLE, $src, [ self::AMP_RUNTIME_HANDLE ], self::AMP_BASE_CAROUSEL_VERSION, false );
 		}
 
-		wp_enqueue_script( 'amp-base-carousel' );
+		wp_enqueue_script( self::AMP_BASE_CAROUSEL_HANDLE );
 
-		$src                     = 'https://cdn.ampproject.org/v0/amp-base-carousel-1.0.css';
-		$amp_base_carousel_style = wp_styles()->query( 'amp-base-carousel' );
+		$src                     = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.css', self::AMP_BASE_CAROUSEL_VERSION );
+		$amp_base_carousel_style = wp_styles()->query( self::AMP_BASE_CAROUSEL_HANDLE );
 
 		if ( $amp_base_carousel_style ) {
 			// Make sure that 1.0 (Bento) is used instead of 0.1 (latest).
 			$amp_base_carousel_style->src = $src;
 		} else {
-			wp_register_style( 'amp-base-carousel', $src, array(), null, false );
+			wp_register_style( self::AMP_BASE_CAROUSEL_HANDLE, $src, [], self::AMP_BASE_CAROUSEL_VERSION, false );
 		}
 
 		if ( ! is_amp_request() ) { // AMP plugin flags this stylesheet's validation error, not sure why.
-			wp_enqueue_style( 'amp-base-carousel' );
+			wp_enqueue_style( self::AMP_BASE_CAROUSEL_HANDLE );
 		}
 
 	}
