@@ -11,5 +11,5 @@ jobs:
     - name: Run PHPCS inspection
       uses: rtCamp/action-phpcs-code-review@v2
       env:
-        SKIP_FOLDERS: "tests,.github"
+        SKIP_FOLDERS: "tests,.github,assets/build"
         GH_BOT_TOKEN: ${{ secrets.RTBOT_TOKEN }}
