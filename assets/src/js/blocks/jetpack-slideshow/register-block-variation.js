@@ -22,4 +22,5 @@ registerBlockVariation(BLOCK_NAME, {
 	attributes: {
 		isBento: true,
 	},
+	isActive: ['isBento'],
 });
