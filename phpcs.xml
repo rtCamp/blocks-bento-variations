@@ -2,6 +2,11 @@
 <ruleset name="WordPress Coding Standards for Preferred Languages Plugin">
 	<description>A custom set of code standard rules for Preferred Languages.</description>
 
+	<rule ref="WordPress">
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+	</rule>
+	
 	<rule ref="WordPress-Core">
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals" />
 	</rule>
