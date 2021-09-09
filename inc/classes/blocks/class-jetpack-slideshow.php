@@ -163,8 +163,8 @@ class Jetpack_Slideshow {
 			'<amp-base-carousel width="%1$d" height="%2$d" layout="responsive" data-next-button-aria-label="%3$s" data-prev-button-aria-label="%4$s" %5$s id="wp-block-jetpack-slideshow__amp-base-carousel__%6$s" loop snap="true">%7$s</amp-base-carousel>',
 			esc_attr( $width ),
 			esc_attr( $height ),
-			esc_attr__( 'Next Slide', 'jetpack' ),
-			esc_attr__( 'Previous Slide', 'jetpack' ),
+			esc_attr__( 'Next Slide', 'blocks-bento-variations' ),
+			esc_attr__( 'Previous Slide', 'blocks-bento-variations' ),
 			$autoplay ? 'auto-advance="true" auto-advance-interval=' . esc_attr( $delay * 1000 ) : '',
 			absint( $block_ordinal ),
 			implode( '', $this->slides( $ids, $width, $height ) )
