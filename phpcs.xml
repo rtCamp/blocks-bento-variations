@@ -6,7 +6,7 @@
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 	</rule>
-	
+
 	<rule ref="WordPress-Core">
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals" />
 	</rule>
@@ -88,4 +88,5 @@
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/tests/*/bootstrap.php</exclude-pattern>
+	<exclude-pattern>*/assets/build/*</exclude-pattern>
 </ruleset>
