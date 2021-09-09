@@ -18,6 +18,7 @@ define( 'BLOCKS_BENTO_VARIATIONS_URL', untrailingslashit( plugin_dir_url( __FILE
 define( 'BLOCKS_BENTO_VARIATIONS_BUILD_URI', BLOCKS_BENTO_VARIATIONS_PATH . '/assets/build' );
 
 require_once BLOCKS_BENTO_VARIATIONS_PATH . '/inc/helpers/autoloader.php';
+require_once BLOCKS_BENTO_VARIATIONS_PATH . '/inc/helpers/helper-functions.php';
 
 /**
  * To load plugin manifest class.

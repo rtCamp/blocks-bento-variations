@@ -22,7 +22,7 @@
  *
  * If you specifically need multiple objects, then use a normal class.
  *
- * @package hg-newsletter-features
+ * @package blocks-bento-variations
  */
 
 namespace Blocks_Bento_Variations\Features\Inc\Traits;

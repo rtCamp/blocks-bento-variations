@@ -31,9 +31,14 @@ class Assets {
 	protected function setup_hooks() {
 
 		/**
-		 * Action
+		 * This is a workaround for an issue where the block filter 'blocks.registerBlockType' isn't
+		 * being triggered for non-core blocks. And hence it's not hooked to 'enqueue_block_editor_assets'.
+		 *
+		 * @see https://github.com/WordPress/gutenberg/issues/9757
+		 * @see https://github.com/WordPress/gutenberg/issues/9757#issuecomment-486088850
 		 */
-		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_block_editor_assets' ] );
+		add_action( 'init', [ $this, 'enqueue_block_editor_assets' ] );
+		add_action( 'wp_head', [ $this, 'enable_bento_experiment' ] );
 
 	}
 
@@ -43,9 +48,24 @@ class Assets {
 	 * @return void
 	 */
 	public function enqueue_block_editor_assets() {
-		$this->register_script( 'bento-variations-editor', 'js/editor.js' );
+
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		/**
+		 * Blocks' Editor scripts.
+		 */
+		$this->register_script( 'bento-variations-editor', 'js/editor.js', [], false, false );
 
 		wp_enqueue_script( 'bento-variations-editor' );
+
+		/**
+		 * Blocks' Editor styles.
+		 */
+		$this->register_style( 'bento-variations-editor', 'css/editor.css' );
+
+		wp_enqueue_style( 'bento-variations-editor' );
 	}
 
 	/**
@@ -126,5 +146,23 @@ class Assets {
 		$file_path = sprintf( '%s/%s', BLOCKS_BENTO_VARIATIONS_BUILD_URI, $file );
 
 		return file_exists( $file_path ) ? filemtime( $file_path ) : false;
+	}
+
+	/**
+	 * Enables Bento experimental feature.
+	 */
+	public function enable_bento_experiment() {
+
+		if ( \is_amp_request() ) {
+			return;
+		}
+
+		?>
+		<script>
+			(self.AMP = self.AMP || []).push(function (AMP) {
+				AMP.toggleExperiment('bento', true);
+			});
+		</script>
+		<?php
 	}
 }

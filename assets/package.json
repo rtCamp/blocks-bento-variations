@@ -19,5 +19,9 @@
 		"postcss-scss": "^3.0.4",
 		"postcss-sort-media-queries": "^2.1.11",
 		"sass-mq": "^5.0.0"
+	},
+	"dependencies": {
+		"@wordpress/blocks": "^11.0.1",
+		"@wordpress/hooks": "^3.2.0"
 	}
 }
