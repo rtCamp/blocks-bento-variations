@@ -32,7 +32,6 @@ The aim is to use [the Block Variation API](https://developer.wordpress.org/bloc
 │   ├── classes
 │   ├── helpers
 │   └── traits
-├── package-lock.json
 ├── blocks-bento-variations.php
 └── phpcs.xml
 ```
