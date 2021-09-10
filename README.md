@@ -8,7 +8,7 @@ Bento AMP offers well-tested, cross-browser compatible and accessible components
 The plugin creates new variations of a few selected Gutenberg blocks. The new variations are created using the [Bento components](https://amp.dev/documentation/guides-and-tutorials/start/bento_guide/). This allows us to compare the Bento based Gutenberg block with their normal version.
 
 ## Technical Details 🔩
-The aim is to use [the Block Variation API](https://developer.wordpress.org/block-editor/reference-guides/block-api/block-variations/) for creating a Bento variation of the blocks. Then, to modify the Bento variation's markup to use the Bento components on the Front-end. The use of the Blocks Variations API reduces efforts of re-creating the block's Editor functionalities.
+The aim is to use [the Block Variations API](https://developer.wordpress.org/block-editor/reference-guides/block-api/block-variations/) for creating the Bento variations of the blocks. Then, to modify the Bento variations' markup to use the Bento components on the Front-end. The use of the Block Variations API reduces efforts of re-creating the block's Editor functionalities.
 
 ## Using the Plugin
 
