@@ -237,11 +237,9 @@ class Jetpack_Slideshow {
 
 		wp_enqueue_style( self::ASSETS_HANDLE );
 
-		if ( ! is_bento( $this->block_attributes ) ) {
-			// If not Bento, assign AMP version (0.1).
+		if ( \is_amp_request() ) {
+			// If it's AMP, assign AMP version (0.1).
 			$this->amp_base_carousel_version = '0.1';
-
-			// return; // Rest of the assets are Bento specific.
 		}
 
 		$src                      = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.js', $this->amp_base_carousel_version );
