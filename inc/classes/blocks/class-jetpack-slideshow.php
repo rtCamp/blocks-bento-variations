@@ -30,11 +30,6 @@ class Jetpack_Slideshow {
 	const AMP_BASE_CAROUSEL_HANDLE = 'amp-base-carousel';
 
 	/**
-	 * Bento component's asset version.
-	 */
-	const AMP_BASE_CAROUSEL_VERSION = '1.0';
-
-	/**
 	 * AMP Runtime script's handle.
 	 */
 	const AMP_RUNTIME_HANDLE = 'amp-runtime';
@@ -43,6 +38,13 @@ class Jetpack_Slideshow {
 	 * Block assets' handle.
 	 */
 	const ASSETS_HANDLE = 'jetpack-slideshow-bento';
+
+	/**
+	 * Component's asset version.
+	 *
+	 * @var string Component Version.
+	 */
+	private $amp_base_carousel_version = '1.0';
 
 	/**
 	 * Current block's block attributes.
@@ -235,30 +237,31 @@ class Jetpack_Slideshow {
 
 		wp_enqueue_style( self::ASSETS_HANDLE );
 
-		if ( ! is_bento( $this->block_attributes ) ) {
-			return; // Rest of the assets are Bento specific.
+		if ( \is_amp_request() ) {
+			// If it's AMP, assign AMP version (0.1).
+			$this->amp_base_carousel_version = '0.1';
 		}
 
-		$src                      = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.js', self::AMP_BASE_CAROUSEL_VERSION );
+		$src                      = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.js', $this->amp_base_carousel_version );
 		$amp_base_carousel_script = wp_scripts()->query( self::AMP_BASE_CAROUSEL_HANDLE );
 
 		if ( $amp_base_carousel_script ) {
 			// Make sure that 1.0 (Bento) is used instead of 0.1 (latest).
 			$amp_base_carousel_script->src = $src;
 		} else {
-			wp_register_script( self::AMP_BASE_CAROUSEL_HANDLE, $src, [ self::AMP_RUNTIME_HANDLE ], self::AMP_BASE_CAROUSEL_VERSION, false );
+			wp_register_script( self::AMP_BASE_CAROUSEL_HANDLE, $src, [ self::AMP_RUNTIME_HANDLE ], $this->amp_base_carousel_version, false );
 		}
 
 		wp_enqueue_script( self::AMP_BASE_CAROUSEL_HANDLE );
 
-		$src                     = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.css', self::AMP_BASE_CAROUSEL_VERSION );
+		$src                     = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.css', $this->amp_base_carousel_version );
 		$amp_base_carousel_style = wp_styles()->query( self::AMP_BASE_CAROUSEL_HANDLE );
 
 		if ( $amp_base_carousel_style ) {
 			// Make sure that 1.0 (Bento) is used instead of 0.1 (latest).
 			$amp_base_carousel_style->src = $src;
 		} else {
-			wp_register_style( self::AMP_BASE_CAROUSEL_HANDLE, $src, [], self::AMP_BASE_CAROUSEL_VERSION, false );
+			wp_register_style( self::AMP_BASE_CAROUSEL_HANDLE, $src, [], $this->amp_base_carousel_version, false );
 		}
 
 		if ( ! is_amp_request() ) { // AMP plugin flags this stylesheet's validation error, not sure why.
