@@ -1,6 +1,9 @@
 # Blocks' Bento Variations
 Experimental Plugin for comparison of Bento based Gutehberg blocks with their non-Bento versions.
 
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/rtCamp/blocks-bento-variations.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/rtCamp/blocks-bento-variations/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/rtCamp/blocks-bento-variations.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/rtCamp/blocks-bento-variations/context:javascript)
+
 ## Bento Introduction
 
 Bento AMP offers well-tested, cross-browser compatible and accessible components that can be used on non-AMP pages without having to use AMP anywhere else. Bento components are designed to be highly performant and contribute to an excellent page experience.
