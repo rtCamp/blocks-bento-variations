@@ -99,8 +99,8 @@ class Jetpack_Slideshow {
 	 */
 	public function render_block( $attributes, $content ) {
 
-		if ( ! $this->initialize_block_attributes( $attributes ) ) {
-			return '';
+		if ( false === $this->initialize_block_attributes( $attributes ) ) {
+			return $content;
 		}
 
 		// Loads block's required front-end scripts & styles.
@@ -110,7 +110,7 @@ class Jetpack_Slideshow {
 			\Jetpack_Gutenberg::load_assets_as_required( 'slideshow' );
 
 			if ( is_bento( $this->block_attributes ) ) {
-				return $this->render_bento();
+				return (string) $this->render_bento( $content );
 			}
 
 			if ( is_amp_request() ) {
@@ -124,11 +124,13 @@ class Jetpack_Slideshow {
 	/**
 	 * Render slideshow block for AMP
 	 *
+	 * @param string $content The block's markup.
+	 *
 	 * @return string
 	 */
-	protected function render_bento() {
+	protected function render_bento( $content ) {
 		if ( empty( $this->block_attributes['ids'] ) ) {
-			return '';
+			return $content;
 		}
 
 		static $wp_block_jetpack_slideshow_id = 0;
@@ -139,11 +141,10 @@ class Jetpack_Slideshow {
 		$classes  = 'wp-block-jetpack-slideshow_container swiper-container';
 
 		return sprintf(
-			'<div class="%1$s" id="wp-block-jetpack-slideshow__%2$d"><div class="wp-block-jetpack-slideshow_container swiper-container">%3$s%4$s</div></div>',
+			'<div class="%1$s" id="wp-block-jetpack-slideshow__%2$d"><div class="wp-block-jetpack-slideshow_container swiper-container">%3$s</div></div>',
 			esc_attr( $classes ),
 			absint( $wp_block_jetpack_slideshow_id ),
-			$this->amp_base_carousel( $wp_block_jetpack_slideshow_id ),
-			''
+			$this->amp_base_carousel( $wp_block_jetpack_slideshow_id )
 		);
 	}
 
@@ -236,6 +237,11 @@ class Jetpack_Slideshow {
 		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-jetpack-slideshow.css' );
 
 		wp_enqueue_style( self::ASSETS_HANDLE );
+
+		// Don't enqueue Bento assets in the editor.
+		if ( is_admin() ) {
+			return;
+		}
 
 		if ( \is_amp_request() ) {
 			// If it's AMP, assign AMP version (0.1).
