@@ -110,7 +110,6 @@ class Jetpack_Slideshow {
 			\Jetpack_Gutenberg::load_assets_as_required( 'slideshow' );
 
 			if ( is_bento( $this->block_attributes ) ) {
-				$content = (string) $this->render_bento( $content );
 				return (string) $this->render_bento( $content );
 			}
 
