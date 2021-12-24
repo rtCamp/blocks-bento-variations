@@ -255,7 +255,7 @@ class Jetpack_Slideshow {
 			// Make sure that 1.0 (Bento) is used instead of 0.1 (latest).
 			$amp_base_carousel_script->src = $src;
 		} else {
-			wp_register_script( self::AMP_BASE_CAROUSEL_HANDLE, $src, [ self::AMP_RUNTIME_HANDLE ], $this->amp_base_carousel_version, false );
+			wp_register_script( self::AMP_BASE_CAROUSEL_HANDLE, $src, [], $this->amp_base_carousel_version, false );
 		}
 
 		wp_enqueue_script( self::AMP_BASE_CAROUSEL_HANDLE );
