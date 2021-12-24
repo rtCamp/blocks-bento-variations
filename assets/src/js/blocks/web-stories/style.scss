@@ -1,0 +1,11 @@
+/**
+ * Block's Front-end specific styles.
+ */
+.web-stories-list.is-carousel .web-stories-list__inner-wrapper {
+	max-width: 100%;
+}
+
+.web-stories-list.is-view-type-carousel .web-stories-list__story {
+	width: auto;
+	margin: 0 5px !important;
+}
