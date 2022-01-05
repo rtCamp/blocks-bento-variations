@@ -9,7 +9,7 @@ import { addFilter } from '@wordpress/hooks';
 import { BLOCK_NAME } from './constants';
 
 /**
- * Function to extend attributes of the 'Jetpack Slideshow' block.
+ * Function to extend attributes of the 'CoBlocks Accordion' block.
  *
  * @param {Object} settings  settings object of the block.
  * @param {string} blockName name of the block.
