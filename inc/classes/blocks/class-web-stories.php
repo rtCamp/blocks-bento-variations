@@ -99,7 +99,17 @@ class Web_Stories {
 		$arrow_nodes = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'glider')]" );
 
 		foreach ( $arrow_nodes as $node ) {
-			$node->parentNode->removeChild( $node );
+			$arrow_node_classes = $node->getAttribute( 'class' );
+
+			if ( strpos( $arrow_node_classes, 'glider-next' ) !== false ) {
+				$arrow_node_classes .= ' bento-next';
+			}
+
+			if ( strpos( $arrow_node_classes, 'glider-prev' ) !== false ) {
+				$arrow_node_classes .= ' bento-prev';
+			}
+
+			$node->setAttribute( 'class', $arrow_node_classes );
 		}
 
 		foreach ( $nodes as $node ) {
@@ -150,8 +160,10 @@ class Web_Stories {
 		}
 
 		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-web-stories.css' );
+		Assets::get_instance()->register_script( self::ASSETS_HANDLE, 'js/web-stories.js' );
 
 		wp_enqueue_style( self::ASSETS_HANDLE );
+		wp_enqueue_script( self::ASSETS_HANDLE );
 
 		$src                      = sprintf( 'https://cdn.ampproject.org/v0/bento-base-carousel-%s.js', $this->bento_base_carousel_version );
 		$amp_base_carousel_script = wp_scripts()->query( self::BENTO_BASE_CAROUSEL_HANDLE );
