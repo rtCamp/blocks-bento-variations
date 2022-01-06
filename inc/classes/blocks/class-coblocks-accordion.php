@@ -48,10 +48,10 @@ class CoBlocks_Accordion {
 
 	/**
 	 * Setup action/filter.
-	 * 
+	 *
 	 * @return void
 	 */
-	function setup_hooks() {
+	protected function setup_hooks() {
 		add_filter( 'render_block', [ $this, 'render_block' ], 10, 2 );
 	}
 
@@ -59,7 +59,7 @@ class CoBlocks_Accordion {
 	 *  Necessary modifications to inject Bento.
 	 *
 	 * @param string $block_content Block's HTML markup in string format.
-	 * @param array $block An array containing block information.
+	 * @param array  $block An array containing block information.
 	 *
 	 * @return string Block's modified HTML markup in string format.
 	 */
@@ -79,7 +79,7 @@ class CoBlocks_Accordion {
 		return sprintf(
 			'<div class="wp-block-coblocks-accordion %1s"><bento-accordion>%2s</bento-accordion></div>',
 			$is_amp ? 'is_amp' : 'is_bento',
-			implode( '', $this->get_sections( $block['innerBlocks'], $is_amp ) )
+			implode( '', $this->get_sections( $block['innerBlocks'] ) )
 		);
 	}
 
@@ -90,18 +90,18 @@ class CoBlocks_Accordion {
 	 *
 	 * @return array Bento Accordion section generated from innerblocks.
 	 */
-	function get_sections( $accordion_items, $is_amp = false ) {
+	public function get_sections( $accordion_items ) {
 
-	  return array_map(
-			function ( $accordion_item ) use( $is_amp ) {
-			   return sprintf(
-				   '<section class=wp-block-coblocks-accordion-item" %1s>%2s<div class="wp-block-coblocks-accordion-item__content">%3s</div></section>',
-				   1 == $accordion_item["attrs"]["open"] ? 'expanded' : '',
-				   $this->accordion_item_title( $accordion_item['innerHTML'] ),
-				   serialize_blocks( $this->parseBlocks( $accordion_item['innerBlocks'] ) )
-			   );
+		return array_map(
+			function ( $accordion_item ) {
+				return sprintf(
+					'<section class=wp-block-coblocks-accordion-item" %1s>%2s<div class="wp-block-coblocks-accordion-item__content">%3s</div></section>',
+					1 === $accordion_item['attrs']['open'] ? 'expanded' : '',
+					$this->accordion_item_title( $accordion_item['innerHTML'] ),
+					serialize_blocks( $this->parse_blocks( $accordion_item['innerBlocks'] ) )
+				);
 			},
-		$accordion_items
+			$accordion_items
 		);
 	}
 
@@ -113,14 +113,11 @@ class CoBlocks_Accordion {
 	 *
 	 * @return string Accordion item title's HTML markup.
 	 */
-	function accordion_item_title ( $accordion_item ) {
-		
+	public function accordion_item_title( $accordion_item ) {
 		$matches = [];
-		
 		preg_match( '/<summary class="(.*?)">(.*?)<\/summary>/', $accordion_item, $matches );
 		return str_replace( 'summary', 'header', $matches[0] );
 	}
-
 
 	/**
 	 * Parse Accordion item's innerblocks
@@ -129,13 +126,13 @@ class CoBlocks_Accordion {
 	 *
 	 * @return array
 	 */
-	function parseBlocks( $blocks ) {
+	public function parse_blocks( $blocks ) {
 
 		$parsed_blocks = [];
 
 		foreach ( $blocks as $block ) {
 			if ( ! empty( $block['innerBlocks'] ) ) {
-				$block['innerBlocks'] = self::parseBlocks( $block['innerBlocks'] );
+				$block['innerBlocks'] = self::parse_blocks( $block['innerBlocks'] );
 			}
 			$parsed_blocks[] = $block;
 		}
@@ -154,11 +151,9 @@ class CoBlocks_Accordion {
 		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-coblocks-accordion.css' );
 		wp_enqueue_style( self::ASSETS_HANDLE );
 
-		
 		if ( \is_amp_request() ) {
 			return;
 		}
-
 
 		$bento_accordion_script_src = 'https://cdn.ampproject.org/v0/bento-accordion-1.0.js';
 		$bento_accordion_script     = wp_scripts()->query( self::BENTO_ACCORDION_HANDLE );
@@ -176,7 +171,7 @@ class CoBlocks_Accordion {
 		if ( ! $bento_accordion_style ) {
 			wp_register_style( self::BENTO_ACCORDION_HANDLE, $bento_accordion_style_src, [], 'v0', false );
 		}
-		
+
 		wp_enqueue_style( self::BENTO_ACCORDION_HANDLE );
 	}
 }
