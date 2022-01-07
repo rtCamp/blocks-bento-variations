@@ -9,6 +9,7 @@ namespace Blocks_Bento_Variations\Features\Inc;
 
 use Blocks_Bento_Variations\Features\Inc\Traits\Singleton;
 use Blocks_Bento_Variations\Features\Inc\Blocks\Jetpack_Slideshow;
+use Blocks_Bento_Variations\Features\Inc\Blocks\CoBlocks_Accordion;
 
 /**
  * Class Blocks
@@ -23,6 +24,7 @@ class Blocks {
 	protected function __construct() {
 
 		Jetpack_Slideshow::get_instance();
+		CoBlocks_Accordion::get_instance();
 	}
 
 }

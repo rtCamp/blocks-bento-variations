@@ -53,6 +53,7 @@ Assets folder contains webpack setup and can be used for creating blocks or addi
 | Block                                     | Variation          | Is AMP Compatible?  | Dependency             |
 |-------------------------------------------|--------------------|--------------------|--------------------|
 | [Slideshow](https://github.com/Automattic/jetpack/tree/master/projects/plugins/jetpack/extensions/blocks/slideshow) | Slideshow (Bento) | Yes | [Jetpack Plugin](https://wordpress.org/plugins/jetpack/)
+| [Accordion](https://github.com/godaddy-wordpress/coblocks/tree/master/src/blocks/accordion) | Accordion (Bento) | Yes | [CoBlocks](https://wordpress.org/plugins/coblocks/)
 
 ## Known Issues
 Initial plans were to have Bento Components based Blocks available for both AMP & Non-AMP pages. But Bento Components are experimentally available at present and so they require [enabling of experimental features](https://amp.dev/documentation/guides-and-tutorials/learn/experimental/?format=websites). The mentioned document also mentions that "Any AMP file that includes experimental features will fail [AMP Validation](https://amp.dev/documentation/guides-and-tutorials/learn/validation-workflow/validate_amp/?format=websites). Remove these experimental components for production-ready AMP documents."
