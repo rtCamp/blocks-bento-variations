@@ -30,6 +30,11 @@ class Web_Stories {
 	const BENTO_BASE_CAROUSEL_HANDLE = 'bento-base-carousel';
 
 	/**
+	 * Bento light-box's asset handle.
+	 */
+	const BENTO_BASE_LIGHTBOX_HANDLE = 'bento-light-box';
+
+	/**
 	 * Bento Runtime script's handle.
 	 */
 	const BENTO_RUNTIME_HANDLE = 'bento-runtime';
@@ -125,7 +130,31 @@ class Web_Stories {
 			$classes_string = str_replace( 'web-stories-list__carousel', 'web-stories-list__carousel--bento', $classes_string );
 			$node->setAttribute( 'class', $classes_string );
 
-			$this->renameTag( $node, 'bento-base-carousel' );
+			$modified_node = $this->rename_tag( $node, 'bento-base-carousel' );
+
+			$posters = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'web-stories-list__story-poster')]" );
+
+			$stories_meta = [];
+
+			foreach ( $posters as $poster ) {
+
+				foreach ( $poster->childNodes as $poster_anchor ) {
+
+					if ( 'a' === $poster_anchor->nodeName ) {
+
+						foreach ( $poster_anchor->childNodes as $poster_img ) {
+
+							if ( 'img' === $poster_img->nodeName ) {
+								$stories_meta[] = [
+									'href' => $poster_anchor->getAttribute( 'href' ),
+									'name' => $poster_img->getAttribute( 'alt' ),
+								];
+							}
+						}
+					}
+				}
+			}
+			$this->add_light_box( $modified_node, $stories_meta );
 		}
 
 		$block_content = $dom->saveHTML();
@@ -133,11 +162,73 @@ class Web_Stories {
 		return $block_content;
 	}
 
+	/**
+	 * Wrap Carousel with Bento light-box.
+	 *
+	 * @param \DOMElement $original_node  DomElement to be wrapped with light-box.
+	 *
+	 * @param array       $stories_meta  Contains href & alt attributes of each story poster.
+	 *
+	 * @return void
+	 */
+	protected function add_light_box( \DOMElement $original_node, $stories_meta ) {
 
-	protected function renameTag( \DOMElement $old_tag_name, $new_tag_name ) {
+		$document = $original_node->ownerDocument;
 
-		$document = $old_tag_name->ownerDocument;
+		$bento_light_box = $document->createElement( 'bento-lightbox' );
+		$bento_light_box->setAttribute( 'class', 'bento-stories-lightbox' );
+		$bento_light_box->setAttribute( 'id', $original_node->getAttribute( 'data-id' ) );
 
+		$amp_story_container = $document->createElement( 'div' );
+		$amp_story_container->setAttribute( 'id', 'web-stories-list__lightbox' );
+
+		$bento_amp_story = $document->createElement( 'amp-story-player' );
+		$bento_amp_story->setAttribute( 'id', 'lightbox-story-container' );
+		$bento_amp_story->setAttribute( 'width', '3.6' );
+		$bento_amp_story->setAttribute( 'height', '6' );
+		$bento_amp_story->setAttribute( 'layout', 'responsive' );
+
+		$story_script_data = [
+			'controls' => [
+				[
+					'name'     => 'close',
+					'position' => 'start',
+				],
+				[
+					'name' => 'skip-next',
+				],
+			],
+			'behavior' => [
+				'autoplay' => false,
+			],
+		];
+		$amp_story_script  = $document->createElement( 'script', wp_json_encode( $story_script_data ) );
+		$amp_story_script->setAttribute( 'type', 'application/json' );
+		$bento_amp_story->appendChild( $amp_story_script );
+
+		foreach ( $stories_meta as $story_meta ) {
+			$amp_story = $document->createElement( 'a', $story_meta['name'] );
+			$amp_story->setAttribute( 'href', $story_meta['href'] );
+			$bento_amp_story->appendChild( $amp_story );
+		};
+
+		$amp_story_container->appendChild( $bento_amp_story );
+		$bento_light_box->appendChild( $amp_story_container );
+		$original_node->parentNode->insertBefore( $bento_light_box, $original_node );
+
+	}
+
+	/**
+	 * Rename carousel element to bento-carousel.
+	 *
+	 * @param \DOMElement $old_tag_name DomElement which's Tag should be renamed.
+	 * @param string      $new_tag_name Tag name to be replaced with.
+	 *
+	 * @return mixed
+	 */
+	protected function rename_tag( \DOMElement $old_tag_name, $new_tag_name ) {
+
+		$document        = $old_tag_name->ownerDocument;
 		$new_tag_element = $document->createElement( $new_tag_name );
 
 		$old_tag_name->parentNode->replaceChild( $new_tag_element, $old_tag_name );
@@ -153,6 +244,13 @@ class Web_Stories {
 		return $new_tag_element;
 	}
 
+
+	/**
+	 * Enqueue required scripts & styles for the block.
+	 * Enqueues Bento component compatibility assets conditionally.
+	 *
+	 * @return void
+	 */
 	protected function enqueue_block_assets() {
 
 		if ( \is_amp_request() ) {
@@ -178,6 +276,9 @@ class Web_Stories {
 
 		wp_enqueue_script( self::BENTO_BASE_CAROUSEL_HANDLE );
 
+		wp_register_script( self::BENTO_BASE_LIGHTBOX_HANDLE, 'https://cdn.ampproject.org/v0/bento-lightbox-1.0.js', [ self::BENTO_RUNTIME_HANDLE ], $this->bento_base_carousel_version, false );
+		wp_enqueue_script( self::BENTO_BASE_LIGHTBOX_HANDLE );
+
 		$src                     = sprintf( 'https://cdn.ampproject.org/v0/bento-base-carousel-%s.css', $this->bento_base_carousel_version );
 		$amp_base_carousel_style = wp_styles()->query( self::BENTO_BASE_CAROUSEL_HANDLE );
 
@@ -188,6 +289,10 @@ class Web_Stories {
 			wp_register_style( self::BENTO_BASE_CAROUSEL_HANDLE, $src, [], $this->bento_base_carousel_version, false );
 		}
 
+		wp_register_style( self::BENTO_BASE_LIGHTBOX_HANDLE, 'https://cdn.ampproject.org/v0/bento-lightbox-1.0.css', [], $this->bento_base_carousel_version, false );
 		wp_enqueue_style( self::BENTO_BASE_CAROUSEL_HANDLE );
+
+		wp_enqueue_style( self::BENTO_BASE_LIGHTBOX_HANDLE );
+
 	}
 }

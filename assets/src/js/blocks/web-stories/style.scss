@@ -7,5 +7,22 @@
 
 .web-stories-list.is-view-type-carousel .web-stories-list__story {
 	width: auto;
+	/* stylelint-disable declaration-no-important */
 	margin: 0 5px !important;
+	/* stylelint-enable declaration-no-important */
+}
+
+.web-stories-list {
+	bento-lightbox {
+		z-index: 9999999;
+		&[open]{
+			amp-story-player{
+				width: 100vw;
+				height: 100vh;
+			}
+		}
+	}
+	.bento-prev, .bento-next {
+		opacity: 0;
+	}
 }
