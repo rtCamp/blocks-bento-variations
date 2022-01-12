@@ -54,6 +54,7 @@ Assets folder contains webpack setup and can be used for creating blocks or addi
 |-------------------------------------------|--------------------|--------------------|--------------------|
 | [Slideshow](https://github.com/Automattic/jetpack/tree/master/projects/plugins/jetpack/extensions/blocks/slideshow) | Slideshow (Bento) | Yes | [Jetpack Plugin](https://wordpress.org/plugins/jetpack/)
 | [Accordion](https://github.com/godaddy-wordpress/coblocks/tree/master/src/blocks/accordion) | Accordion (Bento) | Yes | [CoBlocks](https://wordpress.org/plugins/coblocks/)
+| [Web Stories](https://github.com/google/web-stories-wp/tree/main/packages/stories-block) | Web Stories (Bento) | Yes | [Web Stories](https://wordpress.org/plugins/web-stories/)
 
 ## Roadmap
 At present, only one block variation has been added, Slideshow. There are many more awesome [Bento Components Available](https://amp.dev/documentation/guides-and-tutorials/start/bento_guide/#available-bento-components) which will be used to create new Block Bento Variations of existing blocks.

@@ -5,5 +5,7 @@
 /**
  * Internal dependencies.
  */
-import './register-block-variation';
-import './extend-attributes';
+import { registerBentoVariation } from '../../block-extensions/register-block-variation';
+import * as CONSTANTS from './constants';
+
+registerBentoVariation(CONSTANTS);
