@@ -56,7 +56,7 @@ import './style.scss';
 
 				bentoStory
 					.querySelectorAll(
-						'bento-base-carousel .web-stories-list__story a'
+						'bento-base-carousel .web-stories-list__story'
 					)
 					.forEach((story, index) => {
 						story.addEventListener('click', () => {
@@ -80,6 +80,13 @@ import './style.scss';
 	 * @return {void}
 	 */
 	const setBentoCarouselStyles = (bentoComponent) => {
+		if (
+			!bentoComponent
+				.closest('.web-stories-list')
+				.classList.contains('is-view-type-circles')
+		) {
+			return;
+		}
 		const stories = bentoComponent.querySelectorAll(
 			'.web-stories-list__story'
 		);
@@ -88,6 +95,7 @@ import './style.scss';
 		);
 
 		const itemStyle = window.getComputedStyle(storyItem);
+
 		const itemWidth =
 			parseFloat(itemStyle.width) +
 			(parseFloat(itemStyle.marginLeft) +

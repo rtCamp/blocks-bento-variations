@@ -3,6 +3,13 @@
  */
 .web-stories-list.is-view-type-carousel .web-stories-list__inner-wrapper {
 	max-width: 100%;
+	bento-base-carousel {
+		/* stylelint-disable selector-max-specificity */
+		.web-stories-list__story {
+			width: var(--ws-story-max-width);
+		}
+		/* stylelint-enable selector-max-specificity */
+	}
 }
 
 .web-stories-list.is-view-type-carousel .web-stories-list__story {
@@ -21,8 +28,5 @@
 				height: 100vh;
 			}
 		}
-	}
-	.bento-prev, .bento-next {
-		opacity: 0;
 	}
 }
