@@ -1,0 +1,24 @@
+/**
+ * Block's Front-end specific styles.
+ */
+.wp-block-coblocks-accordion {
+	section {
+		border-radius: 4px;
+		/* stylelint-disable declaration-no-important */
+		margin: 0 0 1em !important;
+		/* stylelint-enable declaration-no-important */
+		header::before {
+			border: none;
+			background: transparent;
+			content: "\25B6";
+			margin-right: 5px;
+			display: inline-block;
+			font-size: 0.9em;
+		}
+		&[expanded] {
+			header::before {
+				content: "\25BC";
+			}
+		}
+	}
+}

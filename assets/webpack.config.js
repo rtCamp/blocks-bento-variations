@@ -29,6 +29,7 @@ module.exports = {
 		editor: resolve('src/js/editor.js'),
 		'jetpack-slideshow': resolve('src/js/blocks/jetpack-slideshow/view.js'),
 		'web-stories': resolve('src/js/blocks/web-stories/view.js'),
+		'coblocks-accordion': resolve('src/js/blocks/coblocks-accordion/view.js'),
 	},
 
 	output: {

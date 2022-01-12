@@ -18,7 +18,9 @@
 		"postcss-pxtorem": "^5.1.1",
 		"postcss-scss": "^3.0.4",
 		"postcss-sort-media-queries": "^2.1.11",
-		"sass-mq": "^5.0.0"
+		"prettier": "^2.5.1",
+		"sass-mq": "^5.0.0",
+		"stylelint": "^13.13.1"
 	},
 	"dependencies": {
 		"@wordpress/blocks": "^11.0.1",

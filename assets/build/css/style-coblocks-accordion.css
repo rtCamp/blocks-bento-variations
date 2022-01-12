@@ -1,0 +1,1 @@
+.wp-block-coblocks-accordion section{border-radius:0.25rem;margin:0 0 1em !important}.wp-block-coblocks-accordion section header::before{border:none;background:transparent;content:"▶";margin-right:0.3125rem;display:inline-block;font-size:.9em}.wp-block-coblocks-accordion section[expanded] header::before{content:"▼"}

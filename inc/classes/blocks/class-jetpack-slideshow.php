@@ -27,12 +27,12 @@ class Jetpack_Slideshow {
 	/**
 	 * Bento component's asset handle.
 	 */
-	const AMP_BASE_CAROUSEL_HANDLE = 'amp-base-carousel';
+	const BENTO_BASE_CAROUSE_HANDLE = 'bento-base-carousel';
 
 	/**
 	 * AMP Runtime script's handle.
 	 */
-	const AMP_RUNTIME_HANDLE = 'amp-runtime';
+	const BENTO_RUNTIME_HANDLE = 'bento-runtime';
 
 	/**
 	 * Block assets' handle.
@@ -44,7 +44,7 @@ class Jetpack_Slideshow {
 	 *
 	 * @var string Component Version.
 	 */
-	private $amp_base_carousel_version = '1.0';
+	private $bento_base_carousel_version = '1.0';
 
 	/**
 	 * Current block's block attributes.
@@ -67,62 +67,44 @@ class Jetpack_Slideshow {
 	 */
 	protected function setup_hooks() {
 
-		/**
-		 * Priority 9, because Jetpack plugin registers at default (10) priority.
-		 * We want to override the original block registration.
-		 */
-		add_action( 'init', [ $this, 'register_block' ], 9 );
+		add_filter( 'render_block', [ $this, 'render_block' ], 10, 2 );
 
 	}
 
 	/**
-	 * Registers the 'Jetpack Slideshow' block.
-	 */
-	public function register_block() {
-		if ( class_exists( '\Automattic\Jetpack\Blocks' ) ) {
-			\Automattic\Jetpack\Blocks::jetpack_register_block(
-				self::NAME,
-				[
-					'render_callback' => [ $this, 'render_block' ],
-				]
-			);
-		}
-	}
-
-	/**
-	 * Slideshow block registration/dependency declaration.
+	 * Necessary modifications to inject Bento.
 	 *
-	 * @param array  $attributes Array containing the slideshow block attributes.
-	 * @param string $content    String containing the slideshow block content.
+	 * @param string $block_content Block's HTML markup in string format.
+	 * @param array  $block An array containing block information.
 	 *
-	 * @return string
+	 * @return string Block's modified HTML markup in string format.
 	 */
-	public function render_block( $attributes, $content ) {
+	public function render_block( $block_content, $block ) {
 
-		if ( false === $this->initialize_block_attributes( $attributes ) ) {
-			return $content;
+		if (
+			is_admin() ||
+			self::NAME !== $block['blockName'] ||
+			! is_bento( $block['attrs'] )
+		) {
+			return $block_content;
 		}
 
-		// Loads block's required front-end scripts & styles.
+		if ( false === $this->initialize_block_attributes( $block['attrs'] ) ) {
+			return $block_content;
+		}
+
+		// Loads block's required bento front-end scripts & styles.
 		$this->enqueue_block_assets();
 
-		if ( class_exists( '\Jetpack_Gutenberg' ) && function_exists( '\Automattic\Jetpack\Extensions\Slideshow\render_amp' ) ) {
-			\Jetpack_Gutenberg::load_assets_as_required( 'slideshow' );
-
-			if ( is_bento( $this->block_attributes ) ) {
-				return (string) $this->render_bento( $content );
-			}
-
-			if ( is_amp_request() ) {
-				return \Automattic\Jetpack\Extensions\Slideshow\render_amp( $this->block_attributes );
-			}
+		if ( is_bento( $this->block_attributes ) ) {
+			return (string) $this->render_bento( $block_content );
 		}
 
-		return $content;
+		return $block_content;
 	}
 
 	/**
-	 * Render slideshow block for AMP
+	 * Render slideshow block's Bento markup.
 	 *
 	 * @param string $content The block's markup.
 	 *
@@ -144,28 +126,31 @@ class Jetpack_Slideshow {
 			'<div class="%1$s" id="wp-block-jetpack-slideshow__%2$d"><div class="wp-block-jetpack-slideshow_container swiper-container">%3$s</div></div>',
 			esc_attr( $classes ),
 			absint( $wp_block_jetpack_slideshow_id ),
-			$this->amp_base_carousel( $wp_block_jetpack_slideshow_id )
+			$this->bento_base_carousel( $wp_block_jetpack_slideshow_id )
 		);
 	}
 
 	/**
-	 * Generate amp-base-carousel markup
+	 * Generate bento-base-carousel markup
 	 *
 	 * @param int $block_ordinal The ordinal number of the block, used in unique ID.
 	 *
-	 * @return string amp-base-carousel markup.
+	 * @return string bento-base-carousel markup.
 	 */
-	protected function amp_base_carousel( $block_ordinal ) {
+	protected function bento_base_carousel( $block_ordinal ) {
 		$ids         = empty( $this->block_attributes['ids'] ) ? [] : $this->block_attributes['ids'];
 		$first_image = wp_get_attachment_metadata( $ids[0] );
 		$delay       = empty( $this->block_attributes['delay'] ) ? 3 : absint( $this->block_attributes['delay'] );
 		$autoplay    = empty( $this->block_attributes['autoplay'] ) ? false : $this->block_attributes['autoplay'];
 		$width       = empty( $first_image['width'] ) ? 800 : $first_image['width'];
 		$height      = empty( $first_image['height'] ) ? 600 : $first_image['height'];
+		$style       = "height: {$height}px;";
+
 		return sprintf(
-			'<amp-base-carousel width="%1$d" height="%2$d" layout="responsive" data-next-button-aria-label="%3$s" data-prev-button-aria-label="%4$s" %5$s id="wp-block-jetpack-slideshow__amp-base-carousel__%6$s" loop snap="true">%7$s</amp-base-carousel>',
+			'<bento-base-carousel width="%1$d" height="%2$d" style="%3$s" data-next-button-aria-label="%4$s" data-prev-button-aria-label="%5$s" %6$s id="wp-block-jetpack-slideshow__amp-base-carousel__%7$s" loop>%8$s</bento-base-carousel>',
 			esc_attr( $width ),
 			esc_attr( $height ),
+			esc_attr( $style ),
 			esc_attr__( 'Next Slide', 'blocks-bento-variations' ),
 			esc_attr__( 'Previous Slide', 'blocks-bento-variations' ),
 			$autoplay ? 'auto-advance="true" auto-advance-interval=' . esc_attr( $delay * 1000 ) : '',
@@ -238,41 +223,37 @@ class Jetpack_Slideshow {
 
 		wp_enqueue_style( self::ASSETS_HANDLE );
 
-		// Don't enqueue Bento assets in the editor.
-		if ( is_admin() ) {
+		if (
+			is_admin() || // Don't enqueue Bento assets in the editor.
+			\is_amp_request() // Assets on AMP are handled by the AMP plugin.
+		) {
 			return;
 		}
 
-		if ( \is_amp_request() ) {
-			// If it's AMP, assign AMP version (0.1).
-			$this->amp_base_carousel_version = '0.1';
-		}
+		$src                        = sprintf( 'https://cdn.ampproject.org/v0/bento-base-carousel-%s.js', $this->bento_base_carousel_version );
+		$bento_base_carousel_script = wp_scripts()->query( self::BENTO_BASE_CAROUSE_HANDLE );
 
-		$src                      = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.js', $this->amp_base_carousel_version );
-		$amp_base_carousel_script = wp_scripts()->query( self::AMP_BASE_CAROUSEL_HANDLE );
-
-		if ( $amp_base_carousel_script ) {
+		if ( $bento_base_carousel_script ) {
 			// Make sure that 1.0 (Bento) is used instead of 0.1 (latest).
-			$amp_base_carousel_script->src = $src;
+			$bento_base_carousel_script->src = $src;
 		} else {
-			wp_register_script( self::AMP_BASE_CAROUSEL_HANDLE, $src, [], $this->amp_base_carousel_version, false );
+			wp_register_script( self::BENTO_RUNTIME_HANDLE, 'https://cdn.ampproject.org/bento.js', [], 'v0', false );
+			wp_register_script( self::BENTO_BASE_CAROUSE_HANDLE, $src, [ self::BENTO_RUNTIME_HANDLE ], $this->bento_base_carousel_version, false );
 		}
 
-		wp_enqueue_script( self::AMP_BASE_CAROUSEL_HANDLE );
+		wp_enqueue_script( self::BENTO_BASE_CAROUSE_HANDLE );
 
-		$src                     = sprintf( 'https://cdn.ampproject.org/v0/amp-base-carousel-%s.css', $this->amp_base_carousel_version );
-		$amp_base_carousel_style = wp_styles()->query( self::AMP_BASE_CAROUSEL_HANDLE );
+		$src                       = sprintf( 'https://cdn.ampproject.org/v0/bento-base-carousel-%s.css', $this->bento_base_carousel_version );
+		$bento_base_carousel_style = wp_styles()->query( self::BENTO_BASE_CAROUSE_HANDLE );
 
-		if ( $amp_base_carousel_style ) {
+		if ( $bento_base_carousel_style ) {
 			// Make sure that 1.0 (Bento) is used instead of 0.1 (latest).
-			$amp_base_carousel_style->src = $src;
+			$bento_base_carousel_style->src = $src;
 		} else {
-			wp_register_style( self::AMP_BASE_CAROUSEL_HANDLE, $src, [], $this->amp_base_carousel_version, false );
+			wp_register_style( self::BENTO_BASE_CAROUSE_HANDLE, $src, [], $this->bento_base_carousel_version, false );
 		}
 
-		if ( ! is_amp_request() ) { // AMP plugin flags this stylesheet's validation error, not sure why.
-			wp_enqueue_style( self::AMP_BASE_CAROUSEL_HANDLE );
-		}
+		wp_enqueue_style( self::BENTO_BASE_CAROUSE_HANDLE );
 
 	}
 
