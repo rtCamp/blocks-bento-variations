@@ -13,3 +13,4 @@ import './block-extensions/extend-attributes';
 import './blocks/jetpack-slideshow';
 import './blocks/web-stories';
 import './blocks/coblocks-accordion';
+import './blocks/atomic-sharing';

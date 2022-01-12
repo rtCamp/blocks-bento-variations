@@ -11,6 +11,7 @@ use Blocks_Bento_Variations\Features\Inc\Traits\Singleton;
 use Blocks_Bento_Variations\Features\Inc\Blocks\Jetpack_Slideshow;
 use Blocks_Bento_Variations\Features\Inc\Blocks\Web_Stories;
 use Blocks_Bento_Variations\Features\Inc\Blocks\CoBlocks_Accordion;
+use Blocks_Bento_Variations\Features\Inc\Blocks\Atomic_Sharing;
 
 /**
  * Class Blocks
@@ -27,6 +28,7 @@ class Blocks {
 		Jetpack_Slideshow::get_instance();
 		Web_Stories::get_instance();
 		CoBlocks_Accordion::get_instance();
+		Atomic_Sharing::get_instance();
 	}
 
 }

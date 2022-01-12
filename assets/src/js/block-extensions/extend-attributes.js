@@ -3,7 +3,15 @@
  */
 import { addFilter } from '@wordpress/hooks';
 
-const BLOCKS = ['coblocks/accordion', 'jetpack/slideshow', 'web-stories/embed'];
+/**
+ * Allowed Block names
+ */
+const BLOCKS = [
+	'coblocks/accordion',
+	'jetpack/slideshow',
+	'web-stories/embed',
+	'atomic-blocks/ab-sharing',
+];
 
 /**
  * Function to extend attributes of the 'CoBlocks Accordion' block.
