@@ -74,7 +74,6 @@ class Atomic_Sharing {
 		}
 
 		$this->enqueue_block_assets();
-		$is_amp = is_amp_request();
 
 		return $this->atomic_blocks_bento_render_sharing( $block['attrs'] );
 	}
@@ -88,6 +87,7 @@ class Atomic_Sharing {
 	protected function enqueue_block_assets() {
 
 		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-atomic-sharing.css' );
+
 		wp_enqueue_style( self::ASSETS_HANDLE );
 
 		if (
@@ -120,28 +120,70 @@ class Atomic_Sharing {
 	/**
 	 * Render the bento social share
 	 *
-	 * @param array $icons Which icons are enabled.
+	 * @param array  $icons Which icons are enabled.
+	 *
+	 * @param string $share_button_style Button style.
 	 *
 	 * @return string
 	 */
-	protected function bento_social_icon( $icons ) {
-		$icons_meta  = [
+	protected function bento_social_icon( $icons, $share_button_style ) {
+		$icons_meta = [
 			'twitter'   => 'Share on Twitter',
 			'facebook'  => 'Share on Facebook',
 			'pinterest' => 'Share on Pinterest',
 			'linkedin'  => 'Share on Linkedin',
 			'email'     => 'Share via email',
+			'reddit'    => 'Share via Reddit',
 		];
+
+		global $post;
+
+		if ( has_post_thumbnail() ) {
+			$thumbnail_id = get_post_thumbnail_id( $post->ID );
+			$thumbnail    = $thumbnail_id ? current( wp_get_attachment_image_src( $thumbnail_id, 'large', true ) ) : '';
+		} else {
+			$thumbnail = null;
+		}
+		$share_urls = [
+			'twitter'   => 'http://twitter.com/share?text=' . get_the_title() . '&url=' . get_the_permalink(),
+			'facebook'  => 'https://www.facebook.com/sharer/sharer.php?u=' . get_the_permalink() . '&title=' . get_the_title(),
+			'linkedin'  => 'https://www.linkedin.com/shareArticle?mini=true&url=' . get_the_permalink() . '&title=' . get_the_title(),
+			'pinterest' => 'https://pinterest.com/pin/create/button/?&url=' . get_the_permalink() . '&description=' . get_the_title() . '&media=' . esc_url( $thumbnail ),
+			'email'     => 'mailto:?subject=' . get_the_title() . '&body=' . get_the_title() . '&mdash;' . get_the_permalink(),
+			'reddit'    => 'https://www.reddit.com/submit?url=' . get_the_permalink(),
+		];
+
 		$bento_icons = '';
 		foreach ( $icons as $icon_name => $is_enabled ) {
-			ob_start();
-			?>
-			<li>
-				<bento-social-share type='<?php echo esc_attr( $icon_name ); ?>' aria-label='<?php echo esc_attr( $icons_meta[ $icon_name ] ); ?>' class='ab-share-<?php echo esc_attr( $icon_name ); ?>'></bento-social-share>
-				<span class="ab-social-text"><?php echo esc_attr( $icons_meta[ $icon_name ] ); ?></span>
-			</li>
-			<?php
-			$bento_icons .= ob_get_clean();
+			if ( isset( $is_enabled ) && $is_enabled ) {
+				// Currently bento-social-share component only provides icons. So for text only style rendering anchor like the core Atomic Sharing block.
+				if ( isset( $share_button_style ) && 'ab-share-text-only' === $share_button_style ) {
+					$bento_icons .= sprintf(
+						'<li>
+							<a
+								href="%1$s"
+								class="ab-share-%3$s"
+								title="%2$s">
+								<span class="ab-social-text">%2$s</span>
+							</a>
+					</li>',
+						$share_urls[ $icon_name ],
+						$icons_meta[ $icon_name ],
+						$icon_name
+					);
+				} else {
+					$bento_icons .= sprintf(
+						'<li class="bento-social-icon-wrapper ab-share-%1$s">
+							<bento-social-share type="%1$s"  aria-label="%2$s" class="bento-social-icon" %3$s  %4$s></bento-social-share>
+							<span class="ab-social-text">%2$s</span>
+						</li>',
+						esc_attr( $icon_name ),
+						esc_attr( $icons_meta[ $icon_name ] ),
+						'facebook' === $icon_name ? "data-param-app_id='none'" : null,
+						'reddit' === $icon_name ? "data-share-endpoint=${share_urls[ 'reddit' ]}" : null
+					);
+				}
+			}
 		}
 		return $bento_icons;
 	}
@@ -162,13 +204,14 @@ class Atomic_Sharing {
 			'pinterest' => $attributes['pinterest'],
 			'linkedin'  => $attributes['linkedin'],
 			'email'     => $attributes['email'],
+			'reddit'    => $attributes['reddit'],
 		];
 
 		return sprintf(
 			'<div class="wp-block-atomic-blocks-ab-sharing ab-block-sharing ab-block-sharing-bento %2$s %3$s %4$s %5$s %6$s">
 			<ul class="ab-share-list bento-social-share-group">%1$s</ul>
 		</div>',
-			$this->bento_social_icon( $icons ),
+			$this->bento_social_icon( $icons, $attributes['shareButtonStyle'] ),
 			isset( $attributes['shareButtonStyle'] ) ? $attributes['shareButtonStyle'] : null,
 			isset( $attributes['shareButtonShape'] ) ? $attributes['shareButtonShape'] : null,
 			isset( $attributes['shareButtonSize'] ) ? $attributes['shareButtonSize'] : null,

@@ -1,3 +1,65 @@
 /**
  * Block's Front-end specific styles.
  */
+.ab-block-sharing-bento {
+	&.ab-share-text-only {
+		.bento-social-icon-wrapper {
+			padding: 10px 15px;
+			bento-social-share {
+				display: none;
+			}
+		}
+	}
+
+	.bento-social-icon-wrapper {
+		cursor: pointer;
+		/* stylelint-disable declaration-no-important */
+		display: inline-flex !important;
+		/* stylelint-enable declaration-no-important */
+		align-items: center;
+		justify-content: center;
+		background: #272c30;
+		color: #fff;
+		padding: 5px 10px;
+		line-height: 1;
+		font-size: 16px;
+		transition: 0.3s ease;
+		border-radius: 100px;
+		bento-social-share {
+			width: 38px;
+			height: 28px;
+		}
+		&:hover {
+			cbox-shadow: inset 0 0 200px rgb(255 255 255 / 15%);
+		}
+	}
+	&.ab-share-size-small {
+		.bento-social-icon-wrapper {
+			font-size: 13px;
+			bento-social-share {
+				width: 22px;
+				height: 22px;
+				/* stylelint-disable selector-max-specificity */
+				&[type='facebook'],&[type='pinterest'] {
+					margin-right: 5px;
+				}
+				/* stylelint-enable selector-max-specificity */
+			}
+		}
+	}
+	&.ab-share-size-large {
+		.bento-social-icon-wrapper {
+			font-size: 20px;
+			bento-social-share {
+				width: 44px;
+				height: 34px;
+			}
+		}
+	}
+	&.ab-share-shape-rounded .bento-social-icon-wrapper {
+		border-radius: 5px;
+	}
+	&.ab-share-shape-square .bento-social-icon-wrapper {
+		border-radius: 0px;
+	}
+}
