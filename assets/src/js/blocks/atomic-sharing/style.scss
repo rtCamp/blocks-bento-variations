@@ -15,7 +15,6 @@
 		cursor: pointer;
 		/* stylelint-disable declaration-no-important */
 		display: inline-flex !important;
-		/* stylelint-enable declaration-no-important */
 		align-items: center;
 		justify-content: center;
 		background: #272c30;
@@ -25,18 +24,30 @@
 		font-size: 16px;
 		transition: 0.3s ease;
 		border-radius: 100px;
-		bento-social-share {
-			width: 38px;
-			height: 28px;
+		bento-social-share, amp-social-share {
+			width: 38px !important;
+			height: 28px !important;
+			color: white;
+			/* stylelint-disable selector-max-specificity */
+			&[type="reddit"]::before {
+				font-size: 26px;
+				position: absolute;
+				top: 0;
+				left: 0;
+				content: "\f281";
+				font-family: "Font Awesome 5 Brands";
+			}
+			/* stylelint-enable selector-max-specificity */
 		}
+		/* stylelint-enable declaration-no-important */
 		&:hover {
-			cbox-shadow: inset 0 0 200px rgb(255 255 255 / 15%);
+			box-shadow: inset 0 0 200px rgb(255 255 255 / 15%);
 		}
 	}
 	&.ab-share-size-small {
 		.bento-social-icon-wrapper {
 			font-size: 13px;
-			bento-social-share {
+			bento-social-share, amp-social-share {
 				width: 22px;
 				height: 22px;
 				/* stylelint-disable selector-max-specificity */
@@ -50,7 +61,7 @@
 	&.ab-share-size-large {
 		.bento-social-icon-wrapper {
 			font-size: 20px;
-			bento-social-share {
+			bento-social-share, amp-social-share {
 				width: 44px;
 				height: 34px;
 			}
@@ -61,5 +72,16 @@
 	}
 	&.ab-share-shape-square .bento-social-icon-wrapper {
 		border-radius: 0px;
+	}
+	amp-social-share {
+		background-color: transparent;
+		&[type="reddit"]::before {
+			/* stylelint-disable declaration-no-important */
+			position: relative !important;
+			/* stylelint-enable declaration-no-important */
+		}
+		&::before {
+			content: '';
+		}
 	}
 }
