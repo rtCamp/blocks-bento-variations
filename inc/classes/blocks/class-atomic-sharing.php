@@ -76,8 +76,7 @@ class Atomic_Sharing {
 		$this->enqueue_block_assets();
 		$is_amp = is_amp_request();
 
-		// Todo: Change markup to inject bento social share component.
-		return $block_content;
+		return $this->atomic_blocks_bento_render_sharing( $block['attrs'] );
 	}
 
 	/**
@@ -91,7 +90,10 @@ class Atomic_Sharing {
 		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-atomic-sharing.css' );
 		wp_enqueue_style( self::ASSETS_HANDLE );
 
-		if ( \is_amp_request() ) {
+		if (
+			is_admin() || // Don't enqueue Bento assets in the editor.
+			\is_amp_request() // Assets on AMP are handled by the AMP plugin.
+		) {
 			return;
 		}
 
@@ -114,4 +116,65 @@ class Atomic_Sharing {
 
 		wp_enqueue_style( self::BENTO_SOCIAL_SHARE_HANDLE );
 	}
+
+	/**
+	 * Render the bento social share
+	 *
+	 * @param array $icons Which icons are enabled.
+	 *
+	 * @return string
+	 */
+	protected function bento_social_icon( $icons ) {
+		$icons_meta  = [
+			'twitter'   => 'Share on Twitter',
+			'facebook'  => 'Share on Facebook',
+			'pinterest' => 'Share on Pinterest',
+			'linkedin'  => 'Share on Linkedin',
+			'email'     => 'Share via email',
+		];
+		$bento_icons = '';
+		foreach ( $icons as $icon_name => $is_enabled ) {
+			ob_start();
+			?>
+			<li>
+				<bento-social-share type='<?php echo esc_attr( $icon_name ); ?>' aria-label='<?php echo esc_attr( $icons_meta[ $icon_name ] ); ?>' class='ab-share-<?php echo esc_attr( $icon_name ); ?>'></bento-social-share>
+				<span class="ab-social-text"><?php echo esc_attr( $icons_meta[ $icon_name ] ); ?></span>
+			</li>
+			<?php
+			$bento_icons .= ob_get_clean();
+		}
+		return $bento_icons;
+	}
+	/**
+	 * Render the sharing links
+	 *
+	 * @param array $attributes The block attributes.
+	 *
+	 * @return string The block HTML.
+	 */
+	protected function atomic_blocks_bento_render_sharing( $attributes ) {
+		$twitter  = ! isset( $attributes['twitter'] ) || $attributes['twitter'];
+		$facebook = ! isset( $attributes['facebook'] ) || $attributes['facebook'];
+
+		$icons = [
+			'twitter'   => $twitter,
+			'facebook'  => $facebook,
+			'pinterest' => $attributes['pinterest'],
+			'linkedin'  => $attributes['linkedin'],
+			'email'     => $attributes['email'],
+		];
+
+		return sprintf(
+			'<div class="wp-block-atomic-blocks-ab-sharing ab-block-sharing ab-block-sharing-bento %2$s %3$s %4$s %5$s %6$s">
+			<ul class="ab-share-list bento-social-share-group">%1$s</ul>
+		</div>',
+			$this->bento_social_icon( $icons ),
+			isset( $attributes['shareButtonStyle'] ) ? $attributes['shareButtonStyle'] : null,
+			isset( $attributes['shareButtonShape'] ) ? $attributes['shareButtonShape'] : null,
+			isset( $attributes['shareButtonSize'] ) ? $attributes['shareButtonSize'] : null,
+			isset( $attributes['shareButtonColor'] ) ? $attributes['shareButtonColor'] : null,
+			isset( $attributes['shareAlignment'] ) ? 'ab-align-' . $attributes['shareAlignment'] : null
+		);
+	}
+
 }

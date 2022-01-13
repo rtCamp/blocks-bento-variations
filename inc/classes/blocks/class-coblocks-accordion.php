@@ -151,7 +151,10 @@ class CoBlocks_Accordion {
 		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-coblocks-accordion.css' );
 		wp_enqueue_style( self::ASSETS_HANDLE );
 
-		if ( \is_amp_request() ) {
+		if (
+			is_admin() || // Don't enqueue Bento assets in the editor.
+			\is_amp_request() // Assets on AMP are handled by the AMP plugin.
+		) {
 			return;
 		}
 
