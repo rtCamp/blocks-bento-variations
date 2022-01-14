@@ -103,6 +103,11 @@ class Web_Stories {
 		$nodes       = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'web-stories-list__carousel')]" );
 		$arrow_nodes = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'glider')]" );
 
+		if ( \is_amp_request() ) {
+			$base_carousel = $dom->getElementsByTagName( 'amp-carousel' );
+			$nodes         = $base_carousel;
+		}
+
 		foreach ( $arrow_nodes as $node ) {
 			$arrow_node_classes = $node->getAttribute( 'class' );
 
@@ -117,13 +122,27 @@ class Web_Stories {
 			$node->setAttribute( 'class', $arrow_node_classes );
 		}
 
+		$carousel_attributes = [
+			'mixed-length' => 'true',
+			'style'        => 'height: 300px;',
+			'auto-advance' => 'false',
+			'loop'         => 'false',
+		];
+
+		if ( ! \is_amp_request() ) {
+			// These two attributes are only supported on the AMP version page/block.
+			$carousel_attributes['controls']  = 'never';
+			$carousel_attributes['snap-true'] = 'center';
+		}
+
 		foreach ( $nodes as $node ) {
-			$node->setAttribute( 'mixed-length', 'true' );
-			$node->setAttribute( 'style', 'height: 300px;' );
-			$node->setAttribute( 'auto-advance', 'false' );
-			$node->setAttribute( 'snap-true', 'center' );
-			$node->setAttribute( 'loop', 'false' );
-			$node->setAttribute( 'controls', 'never' );
+			foreach ( $carousel_attributes as $attribute => $attribute_value ) {
+				$node->setAttribute( $attribute, $attribute_value );
+			}
+
+			if ( \is_amp_request() ) {
+				$node->removeAttribute( 'type' );
+			}
 
 			$classes_string = $node->getAttribute( 'class' );
 
@@ -202,9 +221,12 @@ class Web_Stories {
 				'autoplay' => false,
 			],
 		];
-		$amp_story_script  = $document->createElement( 'script', wp_json_encode( $story_script_data ) );
-		$amp_story_script->setAttribute( 'type', 'application/json' );
-		$bento_amp_story->appendChild( $amp_story_script );
+
+		if ( ! \is_amp_request() ) {
+			$amp_story_script = $document->createElement( 'script', wp_json_encode( $story_script_data ) );
+			$amp_story_script->setAttribute( 'type', 'application/json' );
+			$bento_amp_story->appendChild( $amp_story_script );
+		}
 
 		foreach ( $stories_meta as $story_meta ) {
 			$amp_story = $document->createElement( 'a', $story_meta['name'] );
@@ -253,14 +275,16 @@ class Web_Stories {
 	 */
 	protected function enqueue_block_assets() {
 
+		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-web-stories.css' );
+
+		wp_enqueue_style( self::ASSETS_HANDLE );
+
 		if ( \is_amp_request() ) {
 			return;
 		}
 
-		Assets::get_instance()->register_style( self::ASSETS_HANDLE, 'css/style-web-stories.css' );
 		Assets::get_instance()->register_script( self::ASSETS_HANDLE, 'js/web-stories.js' );
 
-		wp_enqueue_style( self::ASSETS_HANDLE );
 		wp_enqueue_script( self::ASSETS_HANDLE );
 
 		$src                      = sprintf( 'https://cdn.ampproject.org/v0/bento-base-carousel-%s.js', $this->bento_base_carousel_version );
