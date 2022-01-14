@@ -7,7 +7,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "wp-scripts start",
-		"prod": "wp-scripts build",
+		"prod": "wp-scripts build && npm run lint-css && npm run lint-js",
 		"lint-css": "wp-scripts lint-style",
 		"lint-js": "wp-scripts lint-js"
 	},
