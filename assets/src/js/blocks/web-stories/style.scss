@@ -1,32 +1,28 @@
 /**
  * Block's Front-end specific styles.
  */
-.web-stories-list.is-view-type-carousel .web-stories-list__inner-wrapper {
-	max-width: 100%;
-	bento-base-carousel {
-		/* stylelint-disable selector-max-specificity */
-		.web-stories-list__story {
-			width: var(--ws-story-max-width);
-		}
-		/* stylelint-enable selector-max-specificity */
-	}
-}
-
-.web-stories-list.is-view-type-carousel .web-stories-list__story {
-	width: auto;
-	/* stylelint-disable declaration-no-important */
-	margin: 0 5px !important;
-	/* stylelint-enable declaration-no-important */
-}
-
 .web-stories-list {
+	&.is-view-type-carousel,
+	&.is-view-type-circles {
+		.web-stories-list__story {
+			width: auto;
+		}
+
+		.web-stories-list__inner-wrapper {
+			max-width: 100%;
+
+			bento-base-carousel .web-stories-list__story {
+				width: var(--ws-story-max-width);
+			}
+		}
+	}
+
 	bento-lightbox {
 		z-index: 9999999;
-		&[open]{
-			amp-story-player{
-				width: 100vw;
-				height: 100vh;
-			}
+
+		&[open] amp-story-player{
+			width: 100vw;
+			height: 100vh;
 		}
 	}
 }

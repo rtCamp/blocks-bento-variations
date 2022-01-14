@@ -142,4 +142,15 @@ import './style.scss';
 			webStoryLightbox.remove();
 		}
 	}
+
+	const host = document.querySelector('bento-base-carousel');
+	const style = document.createElement('style');
+	style.innerHTML =
+		// eslint-disable-next-line no-multi-str
+		'div[class*="slide-sizing-"] > ::slotted(*),\
+		div[class^="slide-sizing-"] > ::slotted(*) {\
+			margin: 0 5px !important;\
+	}';
+
+	host.shadowRoot.appendChild(style);
 })();
