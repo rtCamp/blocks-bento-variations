@@ -163,7 +163,7 @@ class Web_Stories {
 
 						foreach ( $poster_anchor->childNodes as $poster_img ) {
 
-							if ( 'img' === $poster_img->nodeName ) {
+							if ( ( \is_amp_request() && 'amp-img' === $poster_img->nodeName ) || 'img' === $poster_img->nodeName ) {
 								$stories_meta[] = [
 									'href' => $poster_anchor->getAttribute( 'href' ),
 									'name' => $poster_img->getAttribute( 'alt' ),
