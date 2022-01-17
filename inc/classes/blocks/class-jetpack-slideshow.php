@@ -96,11 +96,7 @@ class Jetpack_Slideshow {
 		// Loads block's required bento front-end scripts & styles.
 		$this->enqueue_block_assets();
 
-		if ( is_bento( $this->block_attributes ) ) {
-			return (string) $this->render_bento( $block_content );
-		}
-
-		return $block_content;
+		return (string) $this->render_bento( $block_content );
 	}
 
 	/**
@@ -144,10 +140,14 @@ class Jetpack_Slideshow {
 		$autoplay    = empty( $this->block_attributes['autoplay'] ) ? false : $this->block_attributes['autoplay'];
 		$width       = empty( $first_image['width'] ) ? 800 : $first_image['width'];
 		$height      = empty( $first_image['height'] ) ? 600 : $first_image['height'];
-		$style       = "height: {$height}px;";
+		$style       = '';
+
+		if ( ! \is_amp_request() ) {
+			$style = "aspect-ratio: {$width}/{$height}";
+		}
 
 		return sprintf(
-			'<bento-base-carousel width="%1$d" height="%2$d" style="%3$s" data-next-button-aria-label="%4$s" data-prev-button-aria-label="%5$s" %6$s id="wp-block-jetpack-slideshow__amp-base-carousel__%7$s" loop>%8$s</bento-base-carousel>',
+			'<bento-base-carousel layout="responsive" width="%1$d" height="%2$d" style="%3$s" data-next-button-aria-label="%4$s" data-prev-button-aria-label="%5$s" %6$s id="wp-block-jetpack-slideshow__amp-base-carousel__%7$s" loop>%8$s</bento-base-carousel>',
 			esc_attr( $width ),
 			esc_attr( $height ),
 			esc_attr( $style ),
