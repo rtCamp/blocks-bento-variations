@@ -10,19 +10,20 @@
 
 		.web-stories-list__inner-wrapper {
 			max-width: 100%;
+		}
 
-			bento-base-carousel .web-stories-list__story { /* stylelint-disable selector-max-specificity */
-				width: var(--ws-story-max-width);
-			}
+		bento-base-carousel .web-stories-list__story {
+			width: var(--ws-story-max-width);
 		}
 	}
 
-	bento-lightbox {
+	bento-lightbox, amp-lightbox {
 		z-index: 9999999;
-
-		&[open] amp-story-player{
+		/* stylelint-disable selector-max-specificity */
+		#web-stories-list__lightbox amp-story-player {
 			width: 100vw;
 			height: 100vh;
 		}
+		/* stylelint-enable selector-max-specificity */
 	}
 }

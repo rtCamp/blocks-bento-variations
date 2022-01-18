@@ -32,7 +32,7 @@ class Web_Stories {
 	/**
 	 * Bento light-box's asset handle.
 	 */
-	const BENTO_BASE_LIGHTBOX_HANDLE = 'bento-light-box';
+	const BENTO_LIGHTBOX_HANDLE = 'bento-light-box';
 
 	/**
 	 * Bento Runtime script's handle.
@@ -99,17 +99,29 @@ class Web_Stories {
 		libxml_use_internal_errors( true );
 		$dom->loadHTML( mb_convert_encoding( $block_content, 'HTML-ENTITIES', 'UTF-8' ) );
 
-		$finder      = new \DomXPath( $dom );
-		$nodes       = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'web-stories-list__carousel')]" );
-		$arrow_nodes = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'glider')]" );
+		$finder              = new \DomXPath( $dom );
+		$carousel_nodes      = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'web-stories-list__carousel')]" );
+		$arrow_nodes         = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'glider')]" );
+		$carousel_attributes = [
+			'mixed-length' => 'true',
+			'style'        => 'height: 308px;',
+			'auto-advance' => 'false',
+			'loop'         => 'false',
+		];
 
-		if ( \is_amp_request() ) {
-			$base_carousel = $dom->getElementsByTagName( 'amp-carousel' );
-			$nodes         = $base_carousel;
+		if ( ! \is_amp_request() ) {
+			// These two attributes are only supported on the AMP version.
+			$carousel_attributes['controls']  = 'never';
+			$carousel_attributes['snap-true'] = 'center';
 		}
 
-		foreach ( $arrow_nodes as $node ) {
-			$arrow_node_classes = $node->getAttribute( 'class' );
+		if ( \is_amp_request() ) {
+			$carousel_nodes = $dom->getElementsByTagName( 'amp-carousel' );
+		}
+
+		// Add custom classes on the Slider Arrow controls.
+		foreach ( $arrow_nodes as $arrow_node ) {
+			$arrow_node_classes = $arrow_node->getAttribute( 'class' );
 
 			if ( strpos( $arrow_node_classes, 'glider-next' ) !== false ) {
 				$arrow_node_classes .= ' bento-next';
@@ -119,37 +131,24 @@ class Web_Stories {
 				$arrow_node_classes .= ' bento-prev';
 			}
 
-			$node->setAttribute( 'class', $arrow_node_classes );
+			$arrow_node->setAttribute( 'class', $arrow_node_classes );
 		}
 
-		$carousel_attributes = [
-			'mixed-length' => 'true',
-			'style'        => 'height: 300px;',
-			'auto-advance' => 'false',
-			'loop'         => 'false',
-		];
-
-		if ( ! \is_amp_request() ) {
-			// These two attributes are only supported on the AMP version page/block.
-			$carousel_attributes['controls']  = 'never';
-			$carousel_attributes['snap-true'] = 'center';
-		}
-
-		foreach ( $nodes as $node ) {
+		foreach ( $carousel_nodes as $carousel_node ) {
 			foreach ( $carousel_attributes as $attribute => $attribute_value ) {
-				$node->setAttribute( $attribute, $attribute_value );
+				$carousel_node->setAttribute( $attribute, $attribute_value );
 			}
 
 			if ( \is_amp_request() ) {
-				$node->removeAttribute( 'type' );
+				$carousel_node->removeAttribute( 'type' );
 			}
 
-			$classes_string = $node->getAttribute( 'class' );
+			$classes_string = $carousel_node->getAttribute( 'class' );
 
 			$classes_string = str_replace( 'web-stories-list__carousel', 'web-stories-list__carousel--bento', $classes_string );
-			$node->setAttribute( 'class', $classes_string );
+			$carousel_node->setAttribute( 'class', $classes_string );
 
-			$modified_node = $this->rename_tag( $node, 'bento-base-carousel' );
+			$modified_node = $this->rename_tag( $carousel_node, 'bento-base-carousel' );
 
 			$posters = $finder->query( "//*[contains(concat(' ', normalize-space(@class), ' '), 'web-stories-list__story-poster')]" );
 
@@ -163,7 +162,7 @@ class Web_Stories {
 
 						foreach ( $poster_anchor->childNodes as $poster_img ) {
 
-							if ( 'img' === $poster_img->nodeName ) {
+							if ( ( \is_amp_request() && 'amp-img' === $poster_img->nodeName ) || 'img' === $poster_img->nodeName ) {
 								$stories_meta[] = [
 									'href' => $poster_anchor->getAttribute( 'href' ),
 									'name' => $poster_img->getAttribute( 'alt' ),
@@ -182,10 +181,9 @@ class Web_Stories {
 	}
 
 	/**
-	 * Wrap Carousel with Bento light-box.
+	 * Adds lightbox markup.
 	 *
 	 * @param \DOMElement $original_node  DomElement to be wrapped with light-box.
-	 *
 	 * @param array       $stories_meta  Contains href & alt attributes of each story poster.
 	 *
 	 * @return void
@@ -201,11 +199,11 @@ class Web_Stories {
 		$amp_story_container = $document->createElement( 'div' );
 		$amp_story_container->setAttribute( 'id', 'web-stories-list__lightbox' );
 
-		$bento_amp_story = $document->createElement( 'amp-story-player' );
-		$bento_amp_story->setAttribute( 'id', 'lightbox-story-container' );
-		$bento_amp_story->setAttribute( 'width', '3.6' );
-		$bento_amp_story->setAttribute( 'height', '6' );
-		$bento_amp_story->setAttribute( 'layout', 'responsive' );
+		$amp_story = $document->createElement( 'amp-story-player' );
+		$amp_story->setAttribute( 'id', 'lightbox-story-container' );
+		$amp_story->setAttribute( 'width', '3.6' );
+		$amp_story->setAttribute( 'height', '6' );
+		$amp_story->setAttribute( 'layout', 'responsive' );
 
 		$story_script_data = [
 			'controls' => [
@@ -225,23 +223,23 @@ class Web_Stories {
 		if ( ! \is_amp_request() ) {
 			$amp_story_script = $document->createElement( 'script', wp_json_encode( $story_script_data ) );
 			$amp_story_script->setAttribute( 'type', 'application/json' );
-			$bento_amp_story->appendChild( $amp_story_script );
+			$amp_story->appendChild( $amp_story_script );
 		}
 
 		foreach ( $stories_meta as $story_meta ) {
-			$amp_story = $document->createElement( 'a', $story_meta['name'] );
-			$amp_story->setAttribute( 'href', $story_meta['href'] );
-			$bento_amp_story->appendChild( $amp_story );
+			$amp_story_link = $document->createElement( 'a', $story_meta['name'] );
+			$amp_story_link->setAttribute( 'href', $story_meta['href'] );
+			$amp_story->appendChild( $amp_story_link );
 		};
 
-		$amp_story_container->appendChild( $bento_amp_story );
+		$amp_story_container->appendChild( $amp_story );
 		$bento_light_box->appendChild( $amp_story_container );
 		$original_node->parentNode->insertBefore( $bento_light_box, $original_node );
 
 	}
 
 	/**
-	 * Rename carousel element to bento-carousel.
+	 * Renames a HTML element, appending all of it's children elements.
 	 *
 	 * @param \DOMElement $old_tag_name DomElement which's Tag should be renamed.
 	 * @param string      $new_tag_name Tag name to be replaced with.
@@ -300,8 +298,8 @@ class Web_Stories {
 
 		wp_enqueue_script( self::BENTO_BASE_CAROUSEL_HANDLE );
 
-		wp_register_script( self::BENTO_BASE_LIGHTBOX_HANDLE, 'https://cdn.ampproject.org/v0/bento-lightbox-1.0.js', [ self::BENTO_RUNTIME_HANDLE ], $this->bento_base_carousel_version, false );
-		wp_enqueue_script( self::BENTO_BASE_LIGHTBOX_HANDLE );
+		wp_register_script( self::BENTO_LIGHTBOX_HANDLE, 'https://cdn.ampproject.org/v0/bento-lightbox-1.0.js', [ self::BENTO_RUNTIME_HANDLE ], $this->bento_base_carousel_version, false );
+		wp_enqueue_script( self::BENTO_LIGHTBOX_HANDLE );
 
 		$src                     = sprintf( 'https://cdn.ampproject.org/v0/bento-base-carousel-%s.css', $this->bento_base_carousel_version );
 		$amp_base_carousel_style = wp_styles()->query( self::BENTO_BASE_CAROUSEL_HANDLE );
@@ -313,10 +311,10 @@ class Web_Stories {
 			wp_register_style( self::BENTO_BASE_CAROUSEL_HANDLE, $src, [], $this->bento_base_carousel_version, false );
 		}
 
-		wp_register_style( self::BENTO_BASE_LIGHTBOX_HANDLE, 'https://cdn.ampproject.org/v0/bento-lightbox-1.0.css', [], $this->bento_base_carousel_version, false );
-		wp_enqueue_style( self::BENTO_BASE_CAROUSEL_HANDLE );
+		wp_register_style( self::BENTO_LIGHTBOX_HANDLE, 'https://cdn.ampproject.org/v0/bento-lightbox-1.0.css', [], $this->bento_base_carousel_version, false );
 
-		wp_enqueue_style( self::BENTO_BASE_LIGHTBOX_HANDLE );
+		wp_enqueue_style( self::BENTO_BASE_CAROUSEL_HANDLE );
+		wp_enqueue_style( self::BENTO_LIGHTBOX_HANDLE );
 
 	}
 }

@@ -7,23 +7,23 @@
 	"private": true,
 	"scripts": {
 		"dev": "wp-scripts start",
-		"prod": "wp-scripts build && npm run lint-css && npm run lint-js",
+		"prod": "wp-scripts build",
 		"lint-css": "wp-scripts lint-style",
 		"lint-js": "wp-scripts lint-js"
 	},
 	"devDependencies": {
-		"@wordpress/eslint-plugin": "^9.1.1",
-		"@wordpress/scripts": "^17.1.0",
-		"postcss-assets": "^5.0.0",
-		"postcss-pxtorem": "^5.1.1",
-		"postcss-scss": "^3.0.4",
-		"postcss-sort-media-queries": "^2.1.11",
+		"@wordpress/eslint-plugin": "^9.3.0",
+		"@wordpress/scripts": "^19.2.3",
+		"postcss-assets": "^6.0.0",
+		"postcss-pxtorem": "^6.0.0",
+		"postcss-scss": "^4.0.3",
+		"postcss-sort-media-queries": "^4.2.1",
 		"prettier": "^2.5.1",
-		"sass-mq": "^5.0.0",
+		"sass-mq": "^6.0.0",
 		"stylelint": "^13.13.1"
 	},
 	"dependencies": {
-		"@wordpress/blocks": "^11.0.1",
-		"@wordpress/hooks": "^3.2.0"
+		"@wordpress/blocks": "^11.1.5",
+		"@wordpress/hooks": "^3.2.2"
 	}
 }
