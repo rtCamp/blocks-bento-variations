@@ -1,5 +1,5 @@
 # Blocks' Bento Variations
-Experimental Plugin for comparison of Bento based Gutehberg blocks with their non-Bento versions.
+Experimental Plugin for comparison of Bento based Gutenberg blocks with their non-Bento versions.
 
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/rtCamp/blocks-bento-variations.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/rtCamp/blocks-bento-variations/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/rtCamp/blocks-bento-variations.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/rtCamp/blocks-bento-variations/context:javascript)
@@ -39,7 +39,7 @@ The aim is to use [the Block Variations API](https://developer.wordpress.org/blo
 └── phpcs.xml
 ```
 ### Building Assets
-Assets folder contains webpack setup and can be used for creating blocks or adding any other custom scripts.
+The assets folder contains webpack setup and can be used for creating blocks or adding any other custom scripts.
 
 - Run `npm i` from `assets` folder to install required npm packages.
 - Use `npm run dev` during development for assets.
@@ -58,13 +58,13 @@ Assets folder contains webpack setup and can be used for creating blocks or addi
 | [Sharing](https://atomicblocks.com/blocks/sharing-icons-block/) | Sharing (Bento) | Yes | [Atomic Blocks](https://wordpress.org/plugins/atomic-blocks/)|
 
 ## Roadmap
-At present, only one block variation has been added, Slideshow. There are many more awesome [Bento Components Available](https://amp.dev/documentation/guides-and-tutorials/start/bento_guide/#available-bento-components) which will be used to create new Block Bento Variations of existing blocks.
+At present, only one block variation has been added, Slideshow. There are many more awesome [Bento Components Available](https://amp.dev/documentation/guides-and-tutorials/start/bento_guide/#available-bento-components) that will be used to create new Block Bento Variations of existing blocks.
 
 ## Reporting a Bug 🐞
 
 Before creating a new issue, do browse through the [existing issues](https://github.com/rtCamp/blocks-bento-variations/issues/) for resolution or upcoming fixes.
 
-If you still need to [log an issue](https://github.com/rtCamp/blocks-bento-variations/issues/new), making sure to include as much detail as you can, including clear steps to reproduce your issue if possible.
+If you still need to [log an issue](https://github.com/rtCamp/blocks-bento-variations/issues/new), make sure to include as much detail as you can, including clear steps to reproduce your issue if possible.
 
 ## Credits ✨
 
