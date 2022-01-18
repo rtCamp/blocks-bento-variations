@@ -143,8 +143,9 @@ import './style.scss';
 		}
 	}
 
-	document.querySelectorAll('bento-base-carousel').forEach(
-		(bentoBaseCarousel) => {
+	document
+		.querySelectorAll('bento-base-carousel')
+		.forEach((bentoBaseCarousel) => {
 			const style = document.createElement('style');
 			style.innerHTML =
 				// eslint-disable-next-line no-multi-str
@@ -154,6 +155,5 @@ import './style.scss';
 			}';
 
 			bentoBaseCarousel.shadowRoot.appendChild(style);
-		}
-	);
+		});
 })();
