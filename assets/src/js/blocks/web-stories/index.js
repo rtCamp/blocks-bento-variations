@@ -1,5 +1,5 @@
 /**
- * Entry point for all scripts responsible for Jetpack Slideshow block's Bento variation.
+ * Entry point for all scripts responsible for Web Stories block's Bento variation.
  */
 
 /**

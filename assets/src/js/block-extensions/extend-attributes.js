@@ -3,20 +3,17 @@
  */
 import { addFilter } from '@wordpress/hooks';
 
-/**
- * Internal dependencies.
- */
-import { BLOCK_NAME } from './constants';
+const BLOCKS = ['coblocks/accordion', 'jetpack/slideshow', 'web-stories/embed'];
 
 /**
- * Function to extend attributes of the 'Jetpack Slideshow' block.
+ * Function to extend attributes of the 'CoBlocks Accordion' block.
  *
  * @param {Object} settings  settings object of the block.
  * @param {string} blockName name of the block.
  * @return {Object} settings object.
  */
 const extendAttributes = (settings, blockName) => {
-	if (BLOCK_NAME !== blockName) {
+	if (!BLOCKS.includes(blockName)) {
 		return settings;
 	}
 
@@ -38,6 +35,6 @@ const extendAttributes = (settings, blockName) => {
 
 addFilter(
 	'blocks.registerBlockType',
-	'blocks-bento-variations/extend-jetpack-slideshow-attributes',
+	'blocks-bento-variations/extend-coblocks-accordion-attributes',
 	extendAttributes
 );
