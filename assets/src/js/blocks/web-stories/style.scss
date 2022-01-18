@@ -10,11 +10,10 @@
 
 		.web-stories-list__inner-wrapper {
 			max-width: 100%;
-			/* stylelint-disable selector-max-specificity */
-			bento-base-carousel .web-stories-list__story {
-				width: var(--ws-story-max-width);
-			}
-			/* stylelint-enable selector-max-specificity */
+		}
+
+		bento-base-carousel .web-stories-list__story {
+			width: var(--ws-story-max-width);
 		}
 	}
 
