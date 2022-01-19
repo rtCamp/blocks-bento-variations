@@ -174,7 +174,7 @@ class Atomic_Sharing {
 				} else {
 					$bento_icons .= sprintf(
 						'<li class="bento-social-icon-wrapper ab-share-%1$s">
-							<bento-social-share type="%1$s"  aria-label="%2$s" class="bento-social-icon" %3$s  %4$s></bento-social-share>
+							<bento-social-share type="%1$s"  aria-label="%2$s" class="bento-social-icon" %3$s  %4$s layout="responsive" height="1" width="1"></bento-social-share>
 							<span class="ab-social-text">%2$s</span>
 						</li>',
 						esc_attr( $icon_name ),
@@ -212,11 +212,11 @@ class Atomic_Sharing {
 			<ul class="ab-share-list bento-social-share-group">%1$s</ul>
 		</div>',
 			$this->bento_social_icon( $icons, $attributes['shareButtonStyle'] ),
-			isset( $attributes['shareButtonStyle'] ) ? $attributes['shareButtonStyle'] : null,
-			isset( $attributes['shareButtonShape'] ) ? $attributes['shareButtonShape'] : null,
-			isset( $attributes['shareButtonSize'] ) ? $attributes['shareButtonSize'] : null,
-			isset( $attributes['shareButtonColor'] ) ? $attributes['shareButtonColor'] : null,
-			isset( $attributes['shareAlignment'] ) ? 'ab-align-' . $attributes['shareAlignment'] : null
+			isset( $attributes['shareButtonStyle'] ) ? $attributes['shareButtonStyle'] : 'ab-share-icon-text',
+			isset( $attributes['shareButtonShape'] ) ? $attributes['shareButtonShape'] : 'ab-share-shape-circular',
+			isset( $attributes['shareButtonSize'] ) ? $attributes['shareButtonSize'] : 'ab-share-size-medium',
+			isset( $attributes['shareButtonColor'] ) ? $attributes['shareButtonColor'] : 'ab-share-color-standard',
+			isset( $attributes['shareAlignment'] ) ? 'ab-align-' . $attributes['shareAlignment'] : 'ab-align-left'
 		);
 	}
 
