@@ -128,12 +128,12 @@ class Atomic_Sharing {
 	 */
 	protected function bento_social_icon( $icons, $share_button_style ) {
 		$icons_meta = [
-			'twitter'   => 'Share on Twitter',
-			'facebook'  => 'Share on Facebook',
-			'pinterest' => 'Share on Pinterest',
-			'linkedin'  => 'Share on Linkedin',
-			'email'     => 'Share via email',
-			'reddit'    => 'Share via Reddit',
+			'twitter'   => __( 'Share on Twitter', 'blocks-bento-variations' ),
+			'facebook'  => __( 'Share on Facebook', 'blocks-bento-variations' ),
+			'pinterest' => __( 'Share on Pinterest', 'blocks-bento-variations' ),
+			'linkedin'  => __( 'Share on Linkedin', 'blocks-bento-variations' ),
+			'email'     => __( 'Share via email', 'blocks-bento-variations' ),
+			'reddit'    => __( 'Share via Reddit', 'blocks-bento-variations' ),
 		];
 
 		global $post;
@@ -144,6 +144,7 @@ class Atomic_Sharing {
 		} else {
 			$thumbnail = null;
 		}
+
 		$share_urls = [
 			'twitter'   => 'http://twitter.com/share?text=' . get_the_title() . '&url=' . get_the_permalink(),
 			'facebook'  => 'https://www.facebook.com/sharer/sharer.php?u=' . get_the_permalink() . '&title=' . get_the_title(),
@@ -154,6 +155,7 @@ class Atomic_Sharing {
 		];
 
 		$bento_icons = '';
+
 		foreach ( $icons as $icon_name => $is_enabled ) {
 			if ( isset( $is_enabled ) && $is_enabled ) {
 				// Currently bento-social-share component only provides icons. So for text only style rendering anchor like the core Atomic Sharing block.
@@ -166,21 +168,32 @@ class Atomic_Sharing {
 								title="%2$s">
 								<span class="ab-social-text">%2$s</span>
 							</a>
-					</li>',
-						$share_urls[ $icon_name ],
-						$icons_meta[ $icon_name ],
-						$icon_name
+						</li>',
+						esc_url( $share_urls[ $icon_name ] ),
+						esc_attr( $icons_meta[ $icon_name ] ),
+						esc_html( $icon_name )
 					);
 				} else {
 					$bento_icons .= sprintf(
 						'<li class="bento-social-icon-wrapper ab-share-%1$s">
-							<bento-social-share type="%1$s"  aria-label="%2$s" class="bento-social-icon" %3$s  %4$s layout="responsive" height="1" width="1"></bento-social-share>
+							<bento-social-share
+								type="%1$s"
+								aria-label="%2$s"
+								class="bento-social-icon"
+								%3$s
+								%4$s
+								%5$s
+								height="1"
+								width="1"
+							>
+							</bento-social-share>
 							<span class="ab-social-text">%2$s</span>
 						</li>',
 						esc_attr( $icon_name ),
 						esc_attr( $icons_meta[ $icon_name ] ),
 						'facebook' === $icon_name ? "data-param-app_id='none'" : null,
-						'reddit' === $icon_name ? "data-share-endpoint=${share_urls[ 'reddit' ]}" : null
+						'reddit' === $icon_name ? "data-share-endpoint=${share_urls[ 'reddit' ]}" : null,
+						\is_amp_request() ? 'layout="responsive"' : ''
 					);
 				}
 			}
@@ -209,8 +222,8 @@ class Atomic_Sharing {
 
 		return sprintf(
 			'<div class="wp-block-atomic-blocks-ab-sharing ab-block-sharing ab-block-sharing-bento %2$s %3$s %4$s %5$s %6$s">
-			<ul class="ab-share-list bento-social-share-group">%1$s</ul>
-		</div>',
+				<ul class="ab-share-list bento-social-share-group">%1$s</ul>
+			</div>',
 			$this->bento_social_icon( $icons, $attributes['shareButtonStyle'] ),
 			isset( $attributes['shareButtonStyle'] ) ? $attributes['shareButtonStyle'] : 'ab-share-icon-text',
 			isset( $attributes['shareButtonShape'] ) ? $attributes['shareButtonShape'] : 'ab-share-shape-circular',
