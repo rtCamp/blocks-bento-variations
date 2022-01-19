@@ -15,7 +15,6 @@
 		"@wordpress/eslint-plugin": "^9.3.0",
 		"@wordpress/scripts": "^19.2.3",
 		"postcss-assets": "^6.0.0",
-		"postcss-pxtorem": "^6.0.0",
 		"postcss-scss": "^4.0.3",
 		"postcss-sort-media-queries": "^4.2.1",
 		"prettier": "^2.5.1",

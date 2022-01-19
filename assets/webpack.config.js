@@ -30,6 +30,7 @@ module.exports = {
 		'jetpack-slideshow': resolve('src/js/blocks/jetpack-slideshow/view.js'),
 		'web-stories': resolve('src/js/blocks/web-stories/view.js'),
 		'coblocks-accordion': resolve('src/js/blocks/coblocks-accordion/view.js'),
+		'atomic-sharing': resolve('src/js/blocks/atomic-sharing/view.js'),
 	},
 
 	output: {
