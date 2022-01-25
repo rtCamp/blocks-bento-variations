@@ -32,7 +32,7 @@ class Web_Stories {
 	/**
 	 * Bento light-box's asset handle.
 	 */
-	const BENTO_LIGHTBOX_HANDLE = 'bento-light-box';
+	const BENTO_LIGHTBOX_HANDLE = 'bento-lightbox';
 
 	/**
 	 * Bento Runtime script's handle.
@@ -278,6 +278,13 @@ class Web_Stories {
 		wp_enqueue_style( self::ASSETS_HANDLE );
 
 		if ( \is_amp_request() ) {
+			$bento_lightbox_src = 'https://cdn.ampproject.org/v0/bento-lightbox-1.0.js';
+
+			$bento_lightbox_script = wp_scripts()->query( self::BENTO_LIGHTBOX_HANDLE );
+
+			if ( $bento_lightbox_script ) {
+				$bento_lightbox_script->src = $bento_lightbox_script;
+			}
 			return;
 		}
 
