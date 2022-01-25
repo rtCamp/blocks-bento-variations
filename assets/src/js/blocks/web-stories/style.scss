@@ -17,6 +17,20 @@
 		}
 	}
 
+	&.is-view-type-carousel.is-style-default {
+		bento-base-carousel {
+			.web-stories-list__story {
+				z-index: -1;
+			}
+
+			.web-stories-list__story-poster {
+				margin: 0 5px;
+				border-radius: 8px;
+				overflow: hidden;
+			}
+		}
+	}
+
 	bento-lightbox, amp-lightbox {
 		z-index: 9999999;
 		/* stylelint-disable selector-max-specificity */
