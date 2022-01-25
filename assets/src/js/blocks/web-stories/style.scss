@@ -19,11 +19,11 @@
 
 	&.is-view-type-carousel.is-style-default {
 		bento-base-carousel {
-			.web-stories-list__story {
+			.web-stories-list__story { /* stylelint-disable-line selector-max-specificity */
 				z-index: -1;
 			}
 
-			.web-stories-list__story-poster {
+			.web-stories-list__story-poster { /* stylelint-disable-line selector-max-specificity */
 				margin: 0 5px;
 				border-radius: 8px;
 				overflow: hidden;
@@ -33,11 +33,9 @@
 
 	bento-lightbox, amp-lightbox {
 		z-index: 9999999;
-		/* stylelint-disable selector-max-specificity */
-		#web-stories-list__lightbox amp-story-player {
+		#web-stories-list__lightbox amp-story-player { /* stylelint-disable-line selector-max-specificity */
 			width: 100vw;
 			height: 100vh;
 		}
-		/* stylelint-enable selector-max-specificity */
 	}
 }
